@@ -17,6 +17,7 @@ import re
 import random
 import io
 import cloudinary.uploader
+from datetime import datetime, timedelta
 
 from app.extensions import db
 from app.models import *
@@ -26,6 +27,69 @@ from app.utils import *
 
 def register_routes(app):
     """Registra todas as rotas legadas na aplicação"""
+
+    # --- ROTAS FALTANTES (Portadas de app_original.py) ---
+    @app.route('/')
+    @login_required
+    def index():
+        daily_challenge = get_or_create_daily_challenge()
+        active_hunt = ScavengerHunt.query.filter_by(is_active=True).first()
+        hunt_progress = None
+        if active_hunt:
+            hunt_progress = UserHuntProgress.query.filter_by(user_id=current_user.id, hunt_id=active_hunt.id).first()
+
+        
+        active_event = GlobalEvent.query.filter(
+            GlobalEvent.is_active == True,
+            GlobalEvent.end_date >= datetime.utcnow(),
+            GlobalEvent.current_hp > 0
+        ).first()
+
+        event_progress = 0
+        if active_event:
+            event_progress = ((active_event.total_hp - active_event.current_hp) / active_event.total_hp) * 100
+
+        return render_template('dashboard.html', 
+                                daily_challenge=daily_challenge,
+                                active_hunt=active_hunt, 
+                                hunt_progress=hunt_progress,
+                                active_event=active_event,      
+                                event_progress=event_progress)
+
+    @app.route('/hunt/start/<int:hunt_id>', methods=['POST'])
+    @login_required
+    def start_hunt(hunt_id):
+        hunt = ScavengerHunt.query.get_or_404(hunt_id)
+        existing_progress = UserHuntProgress.query.filter_by(user_id=current_user.id, hunt_id=hunt.id).first()
+        if not existing_progress:
+            new_progress = UserHuntProgress(user_id=current_user.id, hunt_id=hunt.id, current_step=1)
+            db.session.add(new_progress)
+            db.session.commit()
+            flash('Você começou a caça ao tesouro! Boa sorte!', 'success')
+        return redirect(url_for('index'))
+
+    @app.route('/ranking')
+    @login_required
+    def ranking():
+        ranked_users = User.query.order_by(User.points.desc()).all()
+        all_teams = Team.query.all()
+        ranked_teams = sorted(all_teams, key=lambda t: t.total_points, reverse=True)
+        start_of_month = datetime.utcnow().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        monthly_leaders = db.session.query(
+            User, func.sum(Challenge.points_reward).label('monthly_points')
+        ).join(UserChallenge, User.id == UserChallenge.user_id).join(Challenge, Challenge.id == UserChallenge.challenge_id).filter(UserChallenge.completed_at >= start_of_month).group_by(User).order_by(func.sum(Challenge.points_reward).desc()).limit(10).all()
+        start_of_week = datetime.utcnow() - timedelta(days=datetime.utcnow().weekday())
+        start_of_week = start_of_week.replace(hour=0, minute=0, second=0, microsecond=0)
+        weekly_leaders = db.session.query(
+            User, func.sum(Challenge.points_reward).label('weekly_points')
+        ).join(UserChallenge, User.id == UserChallenge.user_id).join(Challenge, Challenge.id == UserChallenge.challenge_id).filter(UserChallenge.completed_at >= start_of_week).group_by(User).order_by(func.sum(Challenge.points_reward).desc()).limit(10).all()
+        return render_template(
+            'ranking.html', 
+            ranked_users=ranked_users, 
+            ranked_teams=ranked_teams,
+            monthly_leaders=monthly_leaders,
+            weekly_leaders=weekly_leaders
+        )
     
     # --- ROTAS DE CHAT ---
     @app.route('/chat-page')
