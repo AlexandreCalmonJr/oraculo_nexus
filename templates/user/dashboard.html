@@ -1,0 +1,121 @@
+{% extends "user/base_user.html" %}
+
+{% block title %}Meu Dashboard - Service Desk{% endblock %}
+
+{% if active_event %}
+<div class="mb-8 bg-gradient-to-r from-red-500 to-red-700 text-white p-6 rounded-2xl shadow-lg">
+    <h2 class="text-2xl font-bold text-center animate-pulse">
+        <i class="fas fa-skull-crossbones"></i> INVASÃO GLOBAL ATIVA! <i class="fas fa-skull-crossbones"></i>
+    </h2>
+    <h3 class="text-xl font-semibold text-center mt-2">{{ active_event.name }}</h3>
+    <p class="mt-2 text-center text-sm">{{ active_event.description }}</p>
+
+    <div class="mt-4">
+        <div class="flex justify-between mb-1">
+            <span class="text-base font-medium">Vida do Boss</span>
+            <span class="text-sm font-medium">{{ "{:,.0f}".format(active_event.current_hp) }} / {{
+                "{:,.0f}".format(active_event.total_hp) }} HP</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-4 dark:bg-gray-900/50">
+            <div class="bg-yellow-400 h-4 rounded-full" style="width: {{ 100 - event_progress }}%"></div>
+        </div>
+        <p class="text-xs text-center mt-1">O evento termina em: {{ active_event.end_date.strftime('%d/%m/%Y às %H:%M')
+            }}</p>
+    </div>
+    <p class="text-center text-sm mt-3">Complete desafios para causar dano e ajude a comunidade a ganhar <strong>{{
+            active_event.reward_points_on_win }} pontos</strong> de bónus!</p>
+</div>
+{% endif %}
+
+{% block content %}
+<div class="w-full max-w-7xl mx-auto">
+    {% if active_hunt %}
+    <div class="mb-8 bg-gradient-to-r from-purple-500 to-indigo-600 text-white p-6 rounded-2xl shadow-lg">
+        <h2 class="text-2xl font-bold text-center">🌟 Evento Ativo: {{ active_hunt.name }} 🌟</h2>
+        <p class="mt-2 text-center">{{ active_hunt.description }}</p>
+
+        {% if hunt_progress and not hunt_progress.completed_at %}
+        {% set current_step = active_hunt.steps.filter_by(step_number=hunt_progress.current_step).first() %}
+        <div class="mt-4 bg-white/20 p-4 rounded-lg">
+            <p class="font-semibold text-lg">Sua pista atual (Passo {{ hunt_progress.current_step }}):</p>
+            <p class="text-md italic">"{{ current_step.clue_text }}"</p>
+        </div>
+        {% elif hunt_progress and hunt_progress.completed_at %}
+        <p class="mt-4 text-center font-bold text-green-300">Você já completou este evento. Parabéns!</p>
+        {% else %}
+        <div class="mt-4 text-center">
+            <form method="POST" action="{{ url_for('start_hunt', hunt_id=active_hunt.id) }}">
+                <button type="submit"
+                    class="px-6 py-3 bg-white text-gray-900 font-bold rounded-lg hover:bg-gray-200 transition">
+                    Começar a Caça!
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if daily_challenge %}
+    <div class="mb-8 bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-6 rounded-2xl shadow-lg text-center">
+        <h2 class="text-2xl font-bold">🔥 Desafio do Dia! 🔥</h2>
+        <p class="mt-2">Complete o desafio abaixo hoje e ganhe <strong class="font-bold">{{ daily_challenge.bonus_points
+                }} pontos de bônus!</strong></p>
+        <div class="mt-4 bg-white/20 p-4 rounded-lg inline-block">
+            <p class="font-semibold text-lg">{{ daily_challenge.challenge.title }}</p>
+            <p class="text-sm">{{ daily_challenge.challenge.description }}</p>
+        </div>
+        <div class="mt-4">
+            <a href="{{ url_for('list_challenges') }}"
+                class="px-6 py-3 bg-white text-gray-900 font-bold rounded-lg hover:bg-gray-200 transition">
+                Ir para Desafios
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- Coluna da Esquerda (Perfil e Progresso) -->
+        <div class="lg:col-span-1 space-y-8">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg text-center">
+                {% if current_user.avatar_url %}
+                <img src="{{ current_user.avatar_url }}" alt="Avatar"
+                    class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-blue-500">
+                {% else %}
+                <div
+                    class="w-24 h-24 rounded-full mx-auto mb-4 bg-gray-700 flex items-center justify-center text-4xl text-white">
+                    {{ current_user.name[0]|upper }}
+                </div>
+                {% endif %}
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Olá, {{ current_user.name }}!</h2>
+                <p class="text-gray-500 dark:text-gray-400">Bem-vindo(a) de volta!</p>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
+                <h3 class="text-lg font-semibold mb-4">Meu Progresso</h3>
+                <div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-2">
+                    <span>Nível: {{ current_user.level.name if current_user.level }}</span>
+                    <span>{{ current_user.points }} Pontos</span>
+                </div>
+                {% if progress %}
+                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4">
+                    <div class="bg-blue-600 h-4 rounded-full" style="width: {{ progress.percentage }}%"></div>
+                </div>
+                <div class="text-xs text-right mt-1 text-gray-500 dark:text-gray-400">
+                    {% if progress.next_level_points %}
+                    Próximo nível em {{ progress.next_level_points - current_user.points }} pontos
+                    {% else %}
+                    Nível Máximo Atingido!
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Coluna da Direita (Chat) -->
+        <div class="lg:col-span-2 h-[80vh] min-h-[600px]">
+            {% include 'chat/chat.html' %}
+        </div>
+    </div>
+</div>
+{% endblock %}

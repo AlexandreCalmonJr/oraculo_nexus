@@ -1,10 +1,10 @@
-{% extends "base_user.html" %}
+{% extends "user/base_user.html" %}
 
-{% block title %}Assistente de Service Desk - Chat{% endblock %}
+{% block title %}Oráculo Nexus - Chat{% endblock %}
 
 {% block content %}
-    {# Este container usa Tailwind para restaurar o alinhamento centralizado que você preferia #}
-    <main class="flex-1 flex flex-col items-center justify-center pt-20 pb-4 px-4">
-        {% include 'chat.html' %}
-    </main>
+{# Este container usa Tailwind para restaurar o alinhamento centralizado que você preferia #}
+<main class="flex-1 flex flex-col items-center justify-center pt-20 pb-4 px-4">
+    {% include 'chat/chat.html' %}
+</main>
 {% endblock %}

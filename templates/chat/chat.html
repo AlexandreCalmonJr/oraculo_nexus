@@ -1,0 +1,572 @@
+<style>
+    /* Estilos para o componente de chat moderno */
+    .chat-container-modern {
+        font-family: 'Inter', sans-serif;
+        width: 100%;
+        max-width: 700px;
+        margin: 2rem auto;
+        background-color: #ffffff;
+        border-radius: 1rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        height: 80vh;
+        border: 1px solid #e5e7eb;
+    }
+
+    .dark .chat-container-modern {
+        background-color: #1f2937;
+        border-color: #374151;
+    }
+
+    .chat-header-modern {
+        background-color: #f9fafb;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-shrink: 0;
+    }
+
+    .dark .chat-header-modern {
+        background-color: #374151;
+        border-bottom-color: #4b5563;
+    }
+
+    .avatar-modern {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        flex-shrink: 0;
+    }
+
+    .bot-avatar {
+        background-color: #3b82f6;
+    }
+
+    .user-avatar {
+        background-color: #10b981;
+    }
+
+    .chat-header-info {
+        flex-grow: 1;
+    }
+
+    .chat-title-modern {
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+    }
+
+    .dark .chat-title-modern {
+        color: #f9fafb;
+    }
+
+    .chat-status-modern {
+        font-size: 0.8rem;
+        color: #6b7280;
+        display: flex;
+        align-items: center;
+        margin: 0;
+    }
+
+    .dark .chat-status-modern {
+        color: #d1d5db;
+    }
+
+    .status-indicator-modern {
+        width: 8px;
+        height: 8px;
+        background-color: #22c55e;
+        border-radius: 50%;
+        margin-right: 0.5rem;
+    }
+
+    .chat-body-modern {
+        flex-grow: 1;
+        padding: 1.5rem;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .chat-message-modern {
+        display: flex;
+        gap: 0.75rem;
+        max-width: 85%;
+    }
+
+    .chat-message-modern.user {
+        align-self: flex-end;
+        flex-direction: row-reverse;
+    }
+
+    .chat-message-modern.bot {
+        align-self: flex-start;
+    }
+
+    .message-content-modern {
+        background-color: #f3f4f6;
+        padding: 0.75rem 1rem;
+        border-radius: 1rem;
+        word-wrap: break-word;
+    }
+
+    .dark .message-content-modern {
+        background-color: #374151;
+    }
+
+    .chat-message-modern.user .message-content-modern {
+        background-color: #3b82f6;
+        color: white;
+        border-bottom-right-radius: 0.25rem;
+    }
+
+    .dark .chat-message-modern.user .message-content-modern {
+        background-color: #2563eb;
+    }
+
+    .chat-message-modern.bot .message-content-modern {
+        border-bottom-left-radius: 0.25rem;
+        color: #111827;
+    }
+
+    .dark .chat-message-modern.bot .message-content-modern {
+        color: #f9fafb;
+    }
+
+    .message-content-modern p {
+        margin: 0;
+    }
+
+    .message-content-modern strong {
+        font-weight: 600;
+    }
+
+    .message-content-modern a {
+        color: #2563eb;
+        text-decoration: underline;
+    }
+
+    .dark .message-content-modern a {
+        color: #60a5fa;
+    }
+
+    .message-content-modern img,
+    .message-content-modern video {
+        max-width: 100%;
+        border-radius: 0.5rem;
+        margin-top: 0.75rem;
+    }
+
+    .youtube-embed {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+        overflow: hidden;
+        max-width: 100%;
+        background: #000;
+        margin-top: 0.75rem;
+        border-radius: 0.5rem;
+    }
+
+    .youtube-embed iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+
+    .typing-indicator-modern {
+        padding: 0 1.5rem 1rem;
+        display: none;
+        flex-shrink: 0;
+    }
+
+    .typing-dots-modern span {
+        height: 8px;
+        width: 8px;
+        margin: 0 2px;
+        background-color: #9ca3af;
+        border-radius: 50%;
+        display: inline-block;
+        animation: wave 1.3s infinite;
+    }
+
+    .typing-dots-modern span:nth-of-type(2) {
+        animation-delay: 0.2s;
+    }
+
+    .typing-dots-modern span:nth-of-type(3) {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes wave {
+
+        0%,
+        60%,
+        100% {
+            transform: initial;
+        }
+
+        30% {
+            transform: translateY(-8px);
+        }
+    }
+
+    .chat-footer-modern {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #e5e7eb;
+        background-color: #f9fafb;
+        flex-shrink: 0;
+    }
+
+    .dark .chat-footer-modern {
+        background-color: #374151;
+        border-top-color: #4b5563;
+    }
+
+    .chat-form-modern {
+        display: flex;
+        align-items: flex-end;
+        gap: 0.75rem;
+    }
+
+    .chat-input-modern {
+        flex-grow: 1;
+        border: 1px solid #d1d5db;
+        border-radius: 0.75rem;
+        padding: 0.75rem;
+        resize: none;
+        background-color: #ffffff;
+        font-family: inherit;
+        font-size: 0.9rem;
+        min-height: 44px;
+        max-height: 120px;
+        overflow-y: auto;
+    }
+
+    .dark .chat-input-modern {
+        background-color: #4b5563;
+        border-color: #6b7280;
+        color: #f9fafb;
+    }
+
+    .chat-input-modern:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .send-button-modern {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: none;
+        background-color: #3b82f6;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        flex-shrink: 0;
+    }
+
+    .send-button-modern:hover:not(:disabled) {
+        background-color: #2563eb;
+    }
+
+    .send-button-modern:disabled {
+        background-color: #9ca3af;
+        cursor: not-allowed;
+    }
+
+    .faq-options {
+        margin-top: 1rem;
+    }
+
+    .faq-options button {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 0.75rem;
+        margin-top: 0.5rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        background-color: #fff;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        font-family: inherit;
+        font-size: 0.9rem;
+    }
+
+    .faq-options button:hover {
+        background-color: #f3f4f6;
+    }
+
+    .dark .faq-options button {
+        background-color: #4b5563;
+        border-color: #6b7280;
+        color: #f9fafb;
+    }
+
+    .dark .faq-options button:hover {
+        background-color: #6b7280;
+    }
+</style>
+
+<div class="chat-container-modern" role="application" aria-label="Chat do Oráculo Nexus">
+    <header class="chat-header-modern">
+        <div class="avatar-modern bot-avatar" aria-hidden="true">
+            <i class="fas fa-robot"></i>
+        </div>
+        <div class="chat-header-info">
+            <h1 class="chat-title-modern">Oráculo Nexus</h1>
+            <p class="chat-status-modern">
+                <span class="status-indicator-modern" aria-hidden="true"></span>
+                Online
+            </p>
+        </div>
+    </header>
+
+    <main class="chat-body-modern" id="chatBox" role="log" aria-live="polite" aria-label="Conversa do chat">
+        <!-- As mensagens do chat aparecerão aqui -->
+    </main>
+
+    <div class="typing-indicator-modern" id="typingIndicator" aria-label="Assistente está digitando">
+        <div class="typing-dots-modern">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <footer class="chat-footer-modern">
+        <form class="chat-form-modern" id="chat-form">
+            <label for="chatInput" class="sr-only">Digite sua mensagem</label>
+            <textarea id="chatInput" class="chat-input-modern" rows="1" placeholder="Digite sua mensagem..."
+                aria-describedby="send-button-desc"></textarea>
+            <button type="submit" id="sendButton" class="send-button-modern" aria-label="Enviar mensagem">
+                <i class="fas fa-paper-plane" aria-hidden="true"></i>
+            </button>
+            <span id="send-button-desc" class="sr-only">Pressione Enter para enviar ou Shift+Enter para nova
+                linha</span>
+        </form>
+    </footer>
+</div>
+
+<!-- Classe para screen readers -->
+<style>
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Previne que o script seja carregado múltiplas vezes
+        if (window.chatScriptLoaded) {
+            return;
+        }
+        window.chatScriptLoaded = true;
+
+        const chatContainer = document.querySelector('.chat-container-modern');
+        if (!chatContainer) return;
+
+        const chatBox = chatContainer.querySelector('#chatBox');
+        const chatForm = chatContainer.querySelector('#chat-form');
+        const chatInput = chatContainer.querySelector('#chatInput');
+        const sendButton = chatContainer.querySelector('#sendButton');
+        const typingIndicator = chatContainer.querySelector('#typingIndicator');
+        // Pega o token CSRF do seu form (se você estiver usando WTForms, ele está lá)
+        const csrfToken = document.querySelector('input[name="csrf_token"]')?.value || '';
+
+        // --- FUNÇÕES AUXILIARES ---
+
+        function showTyping(show) {
+            typingIndicator.style.display = show ? 'flex' : 'none';
+            sendButton.disabled = show;
+            chatInput.disabled = show;
+            if (!show) {
+                chatInput.focus();
+            }
+        }
+
+        function autoResizeTextarea() {
+            chatInput.style.height = 'auto';
+            chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+        }
+
+        // --- FUNÇÕES PRINCIPAIS DO CHAT ---
+
+        /**
+         * Adiciona uma mensagem na interface do chat.
+         */
+        function addMessage(sender, message, isHtml = false) {
+            const messageWrapper = document.createElement('div');
+            messageWrapper.classList.add('chat-message-modern', sender);
+            messageWrapper.setAttribute('role', 'article');
+            messageWrapper.setAttribute('aria-label', `Mensagem de ${sender === 'user' ? 'usuário' : 'assistente'}`);
+
+            const avatar = document.createElement('div');
+            avatar.classList.add('avatar-modern', sender === 'user' ? 'user-avatar' : 'bot-avatar');
+            avatar.setAttribute('aria-hidden', 'true');
+            const iconClass = sender === 'user' ? 'fa-user' : 'fa-robot';
+            avatar.innerHTML = `<i class="fas ${iconClass}"></i>`;
+
+            const messageContent = document.createElement('div');
+            messageContent.classList.add('message-content-modern');
+
+            if (isHtml) {
+                messageContent.innerHTML = message;
+            } else {
+                messageContent.textContent = message;
+            }
+
+            messageWrapper.appendChild(avatar);
+            messageWrapper.appendChild(messageContent);
+            chatBox.appendChild(messageWrapper);
+
+            messageWrapper.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+
+        /**
+         * Lida com a resposta do bot, renderizando opções se necessário.
+         */
+        function handleBotResponse(data) {
+            let botMessage = data.text;
+            // Se o estado é 'faq_selection', cria os botões
+            if (data.state === 'faq_selection' && data.options) {
+                botMessage += '<div class="faq-options" role="group" aria-label="Selecione uma pergunta">';
+                data.options.forEach(opt => {
+                    // Adicionamos a classe 'faq-option-button' para o nosso event listener
+                    botMessage += `<button class="faq-option-button" data-faq-id="${opt.id}" type="button">${opt.question}</button>`;
+                });
+                botMessage += '</div>';
+            }
+            addMessage('bot', botMessage, data.html);
+        }
+
+        /**
+         * [NOVA FUNÇÃO] Envia o ID da FAQ selecionada para o endpoint correto.
+         */
+        async function handleFaqSelection(faqId, questionText) {
+            // Mostra a escolha do usuário na tela
+            addMessage('user', questionText);
+            showTyping(true);
+
+            try {
+                // Chama a rota CORRETA: /chat/faq_select
+                const response = await fetch('/chat/faq_select', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken // Envia o token CSRF
+                    },
+                    body: JSON.stringify({ faq_id: faqId }) // Envia apenas o ID
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                const data = await response.json();
+                // A resposta é a FAQ detalhada, então renderizamos diretamente
+                addMessage('bot', data.text, data.html);
+
+            } catch (error) {
+                console.error('Erro ao selecionar FAQ:', error);
+                addMessage('bot', 'Desculpe, ocorreu um erro ao buscar a resposta. Tente novamente.');
+            } finally {
+                showTyping(false);
+            }
+        }
+
+        /**
+         * [ATUALIZADA] Envia uma nova mensagem de texto do usuário para o backend.
+         */
+        async function sendMessageToServer(message) {
+            showTyping(true);
+
+            try {
+                // A chamada agora é sempre para /chat e envia apenas a mensagem
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken // Envia o token CSRF
+                    },
+                    body: JSON.stringify({ mensagem: message }),
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                const data = await response.json();
+                handleBotResponse(data);
+
+            } catch (error) {
+                console.error('Erro ao enviar mensagem:', error);
+                addMessage('bot', 'Desculpe, ocorreu um erro de conexão. Tente novamente.');
+            } finally {
+                showTyping(false);
+            }
+        }
+
+        // --- EVENT LISTENERS ---
+
+        // Listener para o formulário (quando o usuário digita e envia)
+        chatForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const message = chatInput.value.trim();
+            if (message && !sendButton.disabled) {
+                addMessage('user', message);
+                sendMessageToServer(message); // Chama a função para novas mensagens
+                chatInput.value = '';
+                autoResizeTextarea();
+            }
+        });
+
+        // Listener para capturar cliques nos botões de FAQ
+        chatBox.addEventListener('click', function (event) {
+            // Verifica se o alvo do clique é um dos nossos botões de opção
+            if (event.target && event.target.classList.contains('faq-option-button')) {
+                const faqId = event.target.dataset.faqId;
+                const questionText = event.target.textContent;
+                handleFaqSelection(faqId, questionText); // Chama a nova função específica
+            }
+        });
+
+        chatInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                chatForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        chatInput.addEventListener('input', autoResizeTextarea);
+
+        // --- INICIALIZAÇÃO ---
+
+        if (chatBox.children.length === 0) {
+            addMessage('bot', 'Olá! Como posso ajudar você hoje?');
+        }
+
+        chatInput.focus();
+    });
+</script>

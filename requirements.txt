@@ -3,11 +3,12 @@ Flask-SQLAlchemy==3.0.3
 Flask-Caching==2.0.2
 redis==5.0.1
 Flask-Login==0.6.2
+Flask-WTF==1.1.1
 Werkzeug==2.3.6
 PyPDF2==3.0.1
 gunicorn==20.1.0
-psycopg2-binary
-spacy
-Pillow
-cloudinary
-Flask-WTF
+psycopg2-binary==2.9.9
+spacy==3.7.2
+Pillow==10.1.0
+cloudinary==1.36.0
+click==8.1.7
