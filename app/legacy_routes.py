@@ -23,6 +23,7 @@ from app.extensions import db
 from app.models import *
 from app.forms import BaseForm
 from app.utils import *
+from app.services.ai_service import ai_service
 
 
 def register_routes(app):
@@ -143,6 +144,13 @@ def register_routes(app):
         solution_response = suggest_solution(mensagem)
         if solution_response:
             resposta['text'] = solution_response
+            return jsonify(resposta)
+        
+        # --- TENTATIVA DE RESPOSTA VIA AI (GEMINI) ---
+        ai_response = ai_service.generate_response(mensagem)
+        if ai_response:
+            resposta['text'] = ai_response
+            resposta['html'] = True # AI retorna Markdown que será renderizado
             return jsonify(resposta)
         
         faq_matches = find_faq_by_nlp(mensagem)

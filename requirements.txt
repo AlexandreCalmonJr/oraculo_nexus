@@ -12,3 +12,5 @@ spacy==3.7.2
 Pillow==10.1.0
 cloudinary==1.36.0
 click==8.1.7
+google-genai
+python-dotenv==1.0.0
