@@ -13,7 +13,8 @@
 <body class="bg-gray-900 flex items-center justify-center min-h-screen">
     <div class="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-lg shadow-lg border border-gray-700">
         <div class="text-center">
-            <i class="fas fa-dungeon text-5xl text-green-400"></i>
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Oráculo Nexus" class="mx-auto mb-4"
+                style="max-width: 300px; height: auto; ">
             <h2 class="mt-4 text-3xl font-extrabold text-white">Bem-vindo de volta!</h2>
             <p class="mt-2 text-gray-400">Entre para continuar a sua aventura.</p>
         </div>
@@ -49,6 +50,12 @@
                 class="font-medium text-green-400 hover:text-green-300">Crie uma agora</a>
         </p>
     </div>
+
+    <!-- Footer -->
+    <footer
+        class="fixed bottom-0 left-0 right-0 bg-gray-900/60 backdrop-blur-lg border-t border-gray-700/50 py-3 text-center text-gray-400 text-xs">
+        <p>Desenvolvido pela equipe <span class="text-cyan-400 font-semibold">D3VB4</span> | © 2026 Oráculo Nexus</p>
+    </footer>
 </body>
 
 </html>

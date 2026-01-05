@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ServiceDesk RPG - Criar Conta</title>
+    <title>ORÁCULO NEXUS - Criar Conta</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -13,7 +13,8 @@
 <body class="bg-gray-900 flex items-center justify-center min-h-screen py-12">
     <div class="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-lg shadow-lg border border-gray-700">
         <div class="text-center">
-            <i class="fas fa-dungeon text-5xl text-green-400"></i>
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Oráculo Nexus" class="mx-auto mb-4"
+                style="max-width: 300px; height: auto; ">
             <h2 class="mt-4 text-3xl font-extrabold text-white">Junte-se à Aventura!</h2>
             <p class="mt-2 text-gray-400">Crie a sua conta para começar a jogar.</p>
         </div>
@@ -33,25 +34,21 @@
             {{ form.csrf_token }}
             <div>
                 <label for="name" class="block text-sm font-medium text-gray-300">Nome de Utilizador</label>
-                <!-- CORREÇÃO: Adicionado text-white -->
                 <input type="text" id="name" name="name" required
                     class="text-white mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500">
             </div>
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-300">Email</label>
-                <!-- CORREÇÃO: Adicionado text-white -->
                 <input type="email" id="email" name="email" required
                     class="text-white mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500">
             </div>
             <div>
                 <label for="password" class="block text-sm font-medium text-gray-300">Senha</label>
-                <!-- CORREÇÃO: Adicionado text-white -->
                 <input type="password" id="password" name="password" required
                     class="text-white mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500">
             </div>
             <div>
                 <label for="invitation_code" class="block text-sm font-medium text-gray-300">Código de Convite</label>
-                <!-- CORREÇÃO: Adicionado text-white -->
                 <input type="text" id="invitation_code" name="invitation_code" required
                     class="text-white mt-1 block w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500">
             </div>
@@ -64,6 +61,12 @@
                 class="font-medium text-green-400 hover:text-green-300">Faça login</a>
         </p>
     </div>
+
+    <!-- Footer -->
+    <footer
+        class="fixed bottom-0 left-0 right-0 bg-gray-900/60 backdrop-blur-lg border-t border-gray-700/50 py-3 text-center text-gray-400 text-xs">
+        <p>Desenvolvido pela equipe <span class="text-cyan-400 font-semibold">D3VB4</span> | © 2026 Oráculo Nexus</p>
+    </footer>
 </body>
 
 </html>
