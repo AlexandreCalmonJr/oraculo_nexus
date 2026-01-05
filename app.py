@@ -131,15 +131,24 @@ def inject_gamification_progress():
             progress_data['percentage'] = 100
     return dict(progress=progress_data)
 
-# Importar todas as rotas do arquivo original
-# Isso mantém a funcionalidade enquanto gradualmente migramos para blueprints
-import sys
-sys.path.insert(0, os.path.dirname(__file__))
-from app_original import *
-
 # --- INICIALIZAÇÃO DO BANCO DE DADOS ---
 with app.app_context():
     initialize_database()
+
+# Importar todas as rotas do arquivo original
+# Isso mantém a funcionalidade enquanto gradualmente migramos para blueprints
+# IMPORTANTE: Fazer isso DEPOIS de inicializar o banco para evitar conflitos
+import sys
+sys.path.insert(0, os.path.dirname(__file__))
+
+# Salvar referência ao app antes do import
+_app = app
+
+# Importar rotas do app_original
+from app_original import *
+
+# Garantir que o app não foi sobrescrito
+app = _app
 
 # --- EXECUÇÃO DA APLICAÇÃO ---
 if __name__ == '__main__':
