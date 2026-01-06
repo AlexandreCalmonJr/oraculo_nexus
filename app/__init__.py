@@ -14,18 +14,26 @@ from app.extensions import db, login_manager, cache
 from app.models import User, Level, Category
 
 # Configuração do spaCy
-try:
-    import spacy
-    SPACY_AVAILABLE = True
-    try:
-        nlp = spacy.load('pt_core_news_sm')
-    except OSError:
-        print("Modelo pt_core_news_sm não encontrado. Funcionalidades de NLP estarão desabilitadas.")
-        nlp = None
-except ImportError:
-    SPACY_AVAILABLE = False
-    nlp = None
-    print("spaCy não está disponível. Algumas funcionalidades de NLP estarão desabilitadas.")
+# spaCy com lazy loading para melhor performance
+SPACY_AVAILABLE = False
+nlp = None
+
+def get_nlp():
+    """Carrega spaCy sob demanda (lazy loading)"""
+    global nlp, SPACY_AVAILABLE
+    if nlp is None:
+        try:
+            import spacy
+            SPACY_AVAILABLE = True
+            try:
+                nlp = spacy.load('pt_core_news_sm')
+            except OSError:
+                print("Modelo pt_core_news_sm não encontrado.")
+                nlp = None
+        except ImportError:
+            SPACY_AVAILABLE = False
+            nlp = None
+    return nlp
 
 
 def create_app(config_class=Config):
