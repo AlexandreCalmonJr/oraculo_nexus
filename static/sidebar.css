@@ -369,20 +369,41 @@
 @media (max-width: 768px) {
     .sidebar {
         transform: translateX(-100%);
-        width: 240px;
+        width: 280px;
+        z-index: 2000;
     }
 
     .sidebar.mobile-open {
         transform: translateX(0);
+        box-shadow: 2px 0 20px rgba(0, 0, 0, 0.3);
     }
 
     .sidebar.collapsed {
         transform: translateX(-100%);
-        width: 240px;
+        width: 280px;
+    }
+
+    /* Botao hamburger visivel no mobile */
+    .sidebar-toggle {
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        right: auto;
+        z-index: 1500;
+        background: var(--primary-500);
+        color: white;
+    }
+
+    .sidebar.mobile-open .sidebar-toggle {
+        left: auto;
+        right: 1rem;
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
     }
 
     .topbar {
         left: 0;
+        padding-left: 4rem;
     }
 
     .main-content {
@@ -392,6 +413,15 @@
 
     .main-footer {
         margin-left: 0;
+    }
+
+    /* Overlay para fechar sidebar */
+    .sidebar-overlay {
+        display: none;
+    }
+
+    .sidebar.mobile-open ~ .sidebar-overlay {
+        display: block;
     }
 }
 
