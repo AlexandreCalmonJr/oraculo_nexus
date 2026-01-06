@@ -56,6 +56,10 @@
                                         class="fas fa-file-import"></i><span>Importar</span></a>
                         <a href="{{ url_for('notifications.admin_notifications') }}" class="sidebar-item"><i
                                         class="fas fa-bell"></i><span>Notificações</span></a>
+                        <a href="{{ url_for('admin_logs.logs_page') }}" class="sidebar-item"><i
+                                        class="fas fa-clipboard-list"></i><span>Logs de Atividade</span></a>
+                        <a href="{{ url_for('security.security_dashboard') }}" class="sidebar-item"><i
+                                        class="fas fa-shield-alt"></i><span>Seguranca</span></a>
                         <div class="sidebar-divider"></div>
                         <a href="{{ url_for('admin_system') }}" class="sidebar-item"><i
                                         class="fas fa-server"></i><span>Monitoramento</span></a>
@@ -68,7 +72,7 @@
                 </nav>
                 <div class="sidebar-footer">
                         <div class="sidebar-user">
-                                <div class="sidebar-user-avatar">A</div>
+                                <div class="sidebar-user-avatar">Admin</div>
                                 <div class="sidebar-user-info">
                                         <p class="sidebar-user-name">Admin</p>
                                         <p class="sidebar-user-level">Administrador</p>

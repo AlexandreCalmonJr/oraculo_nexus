@@ -24,6 +24,7 @@ from app.models import *
 from app.forms import BaseForm
 from app.utils import *
 from app.services.ai_service import ai_service
+from app.services.audit_service import audit_service
 
 
 def register_routes(app):
@@ -273,6 +274,15 @@ def register_routes(app):
                 )
                 db.session.add(new_faq)
                 db.session.commit()
+                
+                # Registrar log de auditoria
+                audit_service.log_create(
+                    admin_id=current_user.id,
+                    resource_type='FAQ',
+                    resource_id=new_faq.id,
+                    resource_name=question[:50]
+                )
+                
                 flash('FAQ criada com sucesso!', 'success')
                 return redirect(url_for('admin_faq'))
             
@@ -319,6 +329,15 @@ def register_routes(app):
             flash('Acesso negado. Apenas administradores podem gerenciar FAQs.', 'error')
             return redirect(url_for('faqs'))
         faq = FAQ.query.get_or_404(faq_id)
+        
+        # Registrar log de auditoria
+        audit_service.log_delete(
+            admin_id=current_user.id,
+            resource_type='FAQ',
+            resource_id=faq.id,
+            resource_name=faq.question[:50]
+        )
+        
         db.session.delete(faq)
         db.session.commit()
         flash('FAQ excluída com sucesso!', 'success')
@@ -626,7 +645,19 @@ def register_routes(app):
             return redirect(url_for('admin_users'))
         
         # Alternar status de admin
+        old_status = user.is_admin
         user.is_admin = not user.is_admin
+        
+        # Registrar log de auditoria
+        audit_service.log_update(
+            admin_id=current_user.id,
+            resource_type='User',
+            resource_id=user.id,
+            resource_name=user.name,
+            old_data={'is_admin': old_status},
+            new_data={'is_admin': user.is_admin}
+        )
+        
         db.session.commit()
         
         status = 'administrador' if user.is_admin else 'usuário normal'
@@ -655,6 +686,15 @@ def register_routes(app):
         # Deletar usuário e dados relacionados
         user_name = user.name
         
+        # Registrar log de auditoria
+        audit_service.log_delete(
+            admin_id=current_user.id,
+            resource_type='User',
+            resource_id=user.id,
+            resource_name=user_name,
+            data={'email': user.email, 'points': user.points}
+        )
+        
         # Remover de equipe se pertencer a alguma
         if user.team_id:
             team = user.team
@@ -682,6 +722,15 @@ def register_routes(app):
             return redirect(url_for('user.index'))
         
         faqs = FAQ.query.all()
+        
+        # Registrar log de auditoria
+        audit_service.log_export(
+            admin_id=current_user.id,
+            resource_type='FAQ',
+            count=len(faqs),
+            format='JSON'
+        )
+        
         faqs_data = []
         
         for faq in faqs:
@@ -727,6 +776,15 @@ def register_routes(app):
         team = Team.query.get_or_404(team_id)
         for member in team.members:
             member.team_id = None
+        # Registrar log de auditoria
+        audit_service.log_delete(
+            admin_id=current_user.id,
+            resource_type='Team',
+            resource_id=team.id,
+            resource_name=team.name,
+            data={'members_count': len(team.members)}
+        )
+        
         db.session.delete(team)
         db.session.commit()
         flash('Time dissolvido com sucesso!', 'success')
@@ -755,6 +813,15 @@ def register_routes(app):
                 level = Level(name=name, min_points=min_points, insignia=insignia_url)
                 db.session.add(level)
                 db.session.commit()
+                
+                # Registrar log de auditoria
+                audit_service.log_create(
+                    admin_id=current_user.id,
+                    resource_type='Level',
+                    resource_id=level.id,
+                    resource_name=name
+                )
+                
                 flash('Nível criado com sucesso!', 'success')
             elif action == 'import_levels':
                 file = request.files['level_file']
@@ -789,6 +856,16 @@ def register_routes(app):
             flash('Erro de validação CSRF.', 'error')
             return redirect(url_for('admin_levels'))
         level = Level.query.get_or_404(level_id)
+        
+        # Registrar log de auditoria
+        audit_service.log_delete(
+            admin_id=current_user.id,
+            resource_type='Level',
+            resource_id=level.id,
+            resource_name=level.name,
+            data={'min_points': level.min_points}
+        )
+        
         db.session.delete(level)
         db.session.commit()
         flash('Nível excluído com sucesso!', 'success')

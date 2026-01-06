@@ -177,6 +177,14 @@ def admin_broadcast_notification():
             save_to_db=False  # Broadcast não salva no DB
         )
         
+        # Registrar log de auditoria
+        from app.services.audit_service import audit_service
+        audit_service.log_broadcast(
+            admin_id=current_user.id,
+            message=message,
+            recipients_count=0  # TODO: contar usuários conectados
+        )
+        
         return jsonify({'success': True, 'message': 'Notificação enviada com sucesso'})
     
     except Exception as e:

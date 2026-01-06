@@ -66,10 +66,14 @@ def create_app(config_class=Config):
     from app.routes.auth import auth_bp
     from app.routes.user import user_bp
     from app.routes.notifications import notifications_bp
+    from app.routes.admin_logs import admin_logs_bp
+    from app.routes.security import security_bp
     
     app.register_blueprint(auth_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(notifications_bp)
+    app.register_blueprint(admin_logs_bp)
+    app.register_blueprint(security_bp)
     
     # Registrar blueprint da API admin
     from app.routes.admin_api import admin_api_bp

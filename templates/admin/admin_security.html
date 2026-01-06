@@ -1,0 +1,411 @@
+{% extends "admin/admin_base.html" %}
+
+{% block title %}Dashboard de Seguranca - Admin{% endblock %}
+
+{% block content %}
+<div class="security-dashboard-wrapper">
+    <div class="admin-header">
+        <h1 class="admin-title">
+            <i class="fas fa-shield-alt"></i> Dashboard de Seguranca
+        </h1>
+    </div>
+
+    <!-- Estatisticas de Seguranca -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;">
+                <i class="fas fa-trash"></i>
+            </div>
+            <div class="stat-content">
+                <p class="stat-label">Total de Exclusoes (30 dias)</p>
+                <p class="stat-value" id="totalDeletions">0</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
+                <i class="fas fa-moon"></i>
+            </div>
+            <div class="stat-content">
+                <p class="stat-label">Acoes Fora do Horario</p>
+                <p class="stat-value" id="suspiciousHours">0</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(139, 92, 246, 0.15); color: #8b5cf6;">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="stat-content">
+                <p class="stat-label">Alertas Criticos</p>
+                <p class="stat-value" id="criticalAlerts">0</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scores de Risco dos Admins -->
+    <div class="risk-section">
+        <h2 class="section-title">
+            <i class="fas fa-user-shield"></i> Analise de Risco dos Administradores
+        </h2>
+
+        <div class="risk-list" id="riskList">
+            <div class="loading-state">
+                <i class="fas fa-spinner fa-spin"></i> Carregando analise de risco...
+            </div>
+        </div>
+    </div>
+
+    <!-- Atividade por Horario -->
+    <div class="chart-section">
+        <h2 class="section-title">
+            <i class="fas fa-clock"></i> Atividade por Horario do Dia
+        </h2>
+        <canvas id="hourlyChart" height="100"></canvas>
+    </div>
+
+    <!-- Top Admins com Mais Exclusoes -->
+    <div class="deletions-section">
+        <h2 class="section-title">
+            <i class="fas fa-user-times"></i> Admins com Mais Exclusoes
+        </h2>
+        <div id="deletionsList" class="deletions-list">
+            <!-- Sera preenchido via JavaScript -->
+        </div>
+    </div>
+</div>
+
+<style>
+    .security-dashboard-wrapper {
+        padding: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .admin-header {
+        margin-bottom: 2rem;
+    }
+
+    .admin-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: var(--bg-secondary);
+        backdrop-filter: blur(12px);
+        border: var(--glass-border);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--glass-shadow);
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .stat-content {
+        flex: 1;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin: 0 0 0.25rem 0;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+    }
+
+    .risk-section,
+    .chart-section,
+    .deletions-section {
+        background: var(--bg-secondary);
+        backdrop-filter: blur(12px);
+        border: var(--glass-border);
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0 0 1.5rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .risk-list {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .risk-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: var(--bg-tertiary);
+        border-radius: 0.5rem;
+        border-left: 4px solid;
+        transition: all 0.3s ease;
+    }
+
+    .risk-item:hover {
+        background: var(--bg-quaternary);
+    }
+
+    .risk-item.risk-critical {
+        border-left-color: #ef4444;
+    }
+
+    .risk-item.risk-high {
+        border-left-color: #f59e0b;
+    }
+
+    .risk-item.risk-medium {
+        border-left-color: #eab308;
+    }
+
+    .risk-item.risk-low {
+        border-left-color: #22c55e;
+    }
+
+    .risk-info {
+        flex: 1;
+    }
+
+    .risk-admin-name {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+    }
+
+    .risk-factors {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+    }
+
+    .risk-score {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .risk-score-value {
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    .risk-score-value.risk-critical {
+        color: #ef4444;
+    }
+
+    .risk-score-value.risk-high {
+        color: #f59e0b;
+    }
+
+    .risk-score-value.risk-medium {
+        color: #eab308;
+    }
+
+    .risk-score-value.risk-low {
+        color: #22c55e;
+    }
+
+    .risk-score-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+    .deletions-list {
+        display: grid;
+        gap: 0.75rem;
+    }
+
+    .deletion-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        background: var(--bg-tertiary);
+        border-radius: 0.5rem;
+    }
+
+    .deletion-admin {
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+
+    .deletion-count {
+        font-weight: 700;
+        color: #ef4444;
+    }
+
+    .loading-state {
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-secondary);
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+    class SecurityDashboard {
+        constructor() {
+            this.init();
+        }
+
+        async init() {
+            await this.loadStats();
+            await this.loadRisks();
+        }
+
+        async loadStats() {
+            try {
+                const response = await fetch('/admin/security/api/stats?days=30');
+                const data = await response.json();
+
+                if (data.success) {
+                    const stats = data.stats;
+
+                    document.getElementById('totalDeletions').textContent = stats.total_deletions;
+                    document.getElementById('suspiciousHours').textContent = stats.suspicious_hours_count;
+
+                    // Contar alertas criticos (exemplo)
+                    document.getElementById('criticalAlerts').textContent = '0';
+
+                    // Renderizar grafico de atividade por horario
+                    this.renderHourlyChart(stats.hourly_activity);
+
+                    // Renderizar lista de exclusoes por admin
+                    this.renderDeletionsList(stats.deletions_by_admin);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar estatisticas:', error);
+            }
+        }
+
+        async loadRisks() {
+            try {
+                const response = await fetch('/admin/security/api/all-risks?days=30');
+                const data = await response.json();
+
+                if (data.success) {
+                    this.renderRiskList(data.risks);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar riscos:', error);
+            }
+        }
+
+        renderRiskList(risks) {
+            const container = document.getElementById('riskList');
+
+            if (risks.length === 0) {
+                container.innerHTML = '<p class="loading-state">Nenhum risco detectado</p>';
+                return;
+            }
+
+            container.innerHTML = risks.map(risk => `
+                <div class="risk-item risk-${risk.level}">
+                    <div class="risk-info">
+                        <div class="risk-admin-name">${risk.admin_name}</div>
+                        <div class="risk-factors">
+                            ${risk.factors.length > 0 ? risk.factors.join(' • ') : 'Sem fatores de risco'}
+                        </div>
+                    </div>
+                    <div class="risk-score">
+                        <div class="risk-score-value risk-${risk.level}">${risk.score}</div>
+                        <div class="risk-score-label">${risk.level}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        renderHourlyChart(hourlyData) {
+            const hours = Array.from({ length: 24 }, (_, i) => i);
+            const counts = hours.map(h => {
+                const found = hourlyData.find(d => d.hour === h);
+                return found ? found.count : 0;
+            });
+
+            new Chart(document.getElementById('hourlyChart'), {
+                type: 'bar',
+                data: {
+                    labels: hours.map(h => h + 'h'),
+                    datasets: [{
+                        label: 'Acoes',
+                        data: counts,
+                        backgroundColor: hours.map(h =>
+                            [0, 1, 2, 3, 4, 5].includes(h) ? '#ef4444' : '#3b82f6'
+                        )
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        renderDeletionsList(deletions) {
+            const container = document.getElementById('deletionsList');
+
+            if (deletions.length === 0) {
+                container.innerHTML = '<p class="loading-state">Nenhuma exclusao registrada</p>';
+                return;
+            }
+
+            container.innerHTML = deletions.slice(0, 10).map(del => `
+                <div class="deletion-item">
+                    <span class="deletion-admin">${del.admin_name}</span>
+                    <span class="deletion-count">${del.count} exclusoes</span>
+                </div>
+            `).join('');
+        }
+    }
+
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', () => {
+        new SecurityDashboard();
+    });
+</script>
+{% endblock %}
