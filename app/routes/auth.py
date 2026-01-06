@@ -34,7 +34,6 @@ def login():
             user.last_login = datetime.utcnow()
             db.session.commit()
             login_user(user)
-            flash('Login realizado com sucesso!', 'success')
             return redirect(url_for('user.index'))
         flash('Email ou senha inválidos.', 'error')
     

@@ -1,6 +1,3 @@
-{% extends "user/base_user.html" %}
-
-{% block content %}
 <!-- Import Google Fonts (Outfit & Fira Code) -->
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&family=Fira+Code:wght@400&display=swap"
     rel="stylesheet">
@@ -34,7 +31,7 @@
         </div>
     </div>
 
-    <footer class="chat-footer-modern">
+    <div class="chat-input-area-modern">
         <form class="chat-form-modern" id="chat-form">
             <label for="chatInput" class="sr-only">Digite sua mensagem</label>
             <textarea id="chatInput" class="chat-input-modern" rows="1" placeholder="Pergunte ao Oráculo..."
@@ -45,7 +42,7 @@
             <span id="send-button-desc" class="sr-only">Pressione Enter para enviar ou Shift+Enter para nova
                 linha</span>
         </form>
-    </footer>
+    </div>
 </div>
 
 <style>
@@ -60,15 +57,29 @@
         white-space: nowrap;
         border: 0;
     }
+
+    /* Forçar altura total do container */
+    .chat-container-modern {
+        height: 100% !important;
+        max-height: 100% !important;
+        min-height: 600px;
+    }
 </style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        if (window.chatScriptLoaded) return;
+        // Prevenir inicialização duplicada
+        if (window.chatScriptLoaded) {
+            console.log('Chat já inicializado, pulando...');
+            return;
+        }
         window.chatScriptLoaded = true;
 
         const chatContainer = document.querySelector('.chat-container-modern');
-        if (!chatContainer) return;
+        if (!chatContainer) {
+            console.error('Container do chat não encontrado');
+            return;
+        }
 
         const chatBox = chatContainer.querySelector('#chatBox');
         const chatForm = chatContainer.querySelector('#chat-form');
@@ -79,8 +90,8 @@
 
         // Configurar Marked.js
         marked.setOptions({
-            breaks: true, // Quebra de linha com Enter
-            gfm: true     // GitHub Flavored Markdown
+            breaks: true,
+            gfm: true
         });
 
         function showTyping(show) {
@@ -113,7 +124,6 @@
             messageContent.classList.add('message-content-modern');
 
             if (sender === 'bot') {
-                // Renderiza Markdown para o bot
                 messageContent.innerHTML = marked.parse(message);
             } else {
                 messageContent.textContent = message;
@@ -140,7 +150,7 @@
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
                 const data = await response.json();
-                addMessage('bot', data.text); // O backend já manda o texto pronto para Markdown
+                addMessage('bot', data.text);
 
             } catch (error) {
                 console.error('Erro:', error);
@@ -174,6 +184,7 @@
         if (chatBox.children.length === 0) {
             addMessage('bot', 'Olá! Sou o **Oráculo Nexus**. Como posso ajudar você hoje?');
         }
+
+        console.log('Chat inicializado com sucesso');
     });
 </script>
-{% endblock %}
