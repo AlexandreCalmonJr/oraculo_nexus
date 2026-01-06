@@ -14,3 +14,6 @@ cloudinary==1.36.0
 click==8.1.7
 google-genai
 python-dotenv==1.0.0
+flask-socketio
+python-socketio
+APScheduler
