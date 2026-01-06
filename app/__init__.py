@@ -54,6 +54,11 @@ def create_app(config_class=Config):
     app.register_blueprint(auth_bp)
     app.register_blueprint(user_bp)
     
+    # Registrar blueprint da API admin
+    from app.routes.admin_api import admin_api_bp
+    app.register_blueprint(admin_api_bp)
+
+    
     # Importar rotas do app.py original temporariamente
     # Isso será refatorado gradualmente
     with app.app_context():

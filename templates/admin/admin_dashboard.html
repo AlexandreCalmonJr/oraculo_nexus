@@ -4,6 +4,11 @@
 
 {% block page_title %}Dashboard{% endblock %}
 
+{% block head_extra %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{% endblock %}
+
 {% block content %}
 <!-- Estatísticas Principais -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -14,8 +19,9 @@
         </div>
         <div class="stat-content">
             <p class="stat-label">Total de Usuários</p>
-            <p class="stat-value">{{ stats.total_users }}</p>
-            <p class="stat-change text-green-500"><i class="fas fa-arrow-up"></i> Ativos</p>
+            <p class="stat-value" id="total-users">{{ stats.total_users }}</p>
+            <p class="stat-change text-green-500"><i class="fas fa-arrow-up"></i> <span id="new-users-today">0</span>
+                hoje</p>
         </div>
     </div>
 
@@ -27,7 +33,8 @@
         <div class="stat-content">
             <p class="stat-label">Desafios Completados</p>
             <p class="stat-value">{{ stats.total_challenges_completed }}</p>
-            <p class="stat-change text-blue-500"><i class="fas fa-trophy"></i> Total</p>
+            <p class="stat-change text-blue-500"><i class="fas fa-trophy"></i> <span id="challenges-today">0</span> hoje
+            </p>
         </div>
     </div>
 
@@ -56,88 +63,64 @@
     </div>
 </div>
 
-<!-- Estatísticas Detalhadas -->
+<!-- Gráficos -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-    <!-- Atividade do Sistema -->
-    <div class="admin-card">
-        <h3 class="card-title">
+    <!-- Gráfico 1: Usuários Ativos (Linha) -->
+    <div class="chart-card">
+        <h3 class="chart-title">
             <i class="fas fa-chart-line mr-2"></i>
-            Atividade do Sistema
+            Novos Usuários (Últimos 30 Dias)
         </h3>
-        <div class="space-y-4">
-            <div class="activity-item">
-                <div class="activity-icon bg-blue-100 text-blue-600">
-                    <i class="fas fa-user-plus"></i>
-                </div>
-                <div class="activity-content">
-                    <p class="activity-title">Novos Usuários (Hoje)</p>
-                    <p class="activity-value">{{ stats.get('new_users_today', 0) }}</p>
-                </div>
-            </div>
-
-            <div class="activity-item">
-                <div class="activity-icon bg-purple-100 text-purple-600">
-                    <i class="fas fa-trophy"></i>
-                </div>
-                <div class="activity-content">
-                    <p class="activity-title">Desafios Completados (Hoje)</p>
-                    <p class="activity-value">{{ stats.get('challenges_today', 0) }}</p>
-                </div>
-            </div>
-
-            <div class="activity-item">
-                <div class="activity-icon bg-green-100 text-green-600">
-                    <i class="fas fa-comments"></i>
-                </div>
-                <div class="activity-content">
-                    <p class="activity-title">Interações no Chat (Hoje)</p>
-                    <p class="activity-value">{{ stats.get('chat_interactions', 0) }}</p>
-                </div>
-            </div>
-        </div>
+        <canvas id="usersChart"></canvas>
     </div>
 
-    <!-- Status do Sistema -->
-    <div class="admin-card">
-        <h3 class="card-title">
-            <i class="fas fa-server mr-2"></i>
-            Status do Sistema
+    <!-- Gráfico 2: Desafios Completados (Barra) -->
+    <div class="chart-card">
+        <h3 class="chart-title">
+            <i class="fas fa-chart-bar mr-2"></i>
+            Desafios Completados (Última Semana)
         </h3>
-        <div class="space-y-4">
-            <div class="status-item">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-sm font-medium">Banco de Dados</span>
-                    <span class="status-badge status-online">Online</span>
-                </div>
-                <div class="status-bar">
-                    <div class="status-bar-fill bg-green-500" style="width: 95%"></div>
-                </div>
-            </div>
+        <canvas id="challengesChart"></canvas>
+    </div>
 
-            <div class="status-item">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-sm font-medium">API Google Gemini</span>
-                    <span class="status-badge status-online">Ativo</span>
-                </div>
-                <div class="status-bar">
-                    <div class="status-bar-fill bg-green-500" style="width: 100%"></div>
-                </div>
-            </div>
+    <!-- Gráfico 3: Distribuição de Níveis (Pizza) -->
+    <div class="chart-card">
+        <h3 class="chart-title">
+            <i class="fas fa-chart-pie mr-2"></i>
+            Distribuição de Níveis
+        </h3>
+        <canvas id="levelsChart"></canvas>
+    </div>
 
-            <div class="status-item">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-sm font-medium">Servidor Flask</span>
-                    <span class="status-badge status-online">Rodando</span>
-                </div>
-                <div class="status-bar">
-                    <div class="status-bar-fill bg-green-500" style="width: 98%"></div>
-                </div>
-            </div>
-        </div>
+    <!-- Gráfico 4: Engajamento por Trilha (Barra Horizontal) -->
+    <div class="chart-card">
+        <h3 class="chart-title">
+            <i class="fas fa-route mr-2"></i>
+            Top 10 Trilhas Mais Populares
+        </h3>
+        <canvas id="pathsChart"></canvas>
+    </div>
+
+    <!-- Gráfico 5: Taxa de Conclusão (Área) -->
+    <div class="chart-card">
+        <h3 class="chart-title">
+            <i class="fas fa-chart-area mr-2"></i>
+            Taxa de Conclusão (Última Semana)
+        </h3>
+        <canvas id="completionChart"></canvas>
+    </div>
+
+    <!-- Gráfico 6: Atividade por Hora (Barra) -->
+    <div class="chart-card">
+        <h3 class="chart-title">
+            <i class="fas fa-clock mr-2"></i>
+            Atividade por Hora do Dia
+        </h3>
+        <canvas id="hourlyChart"></canvas>
     </div>
 </div>
 
-<!-- Ações Rápidas -->
+<!-- Ações Rápidas (mantido do dashboard anterior) -->
 <div class="admin-card">
     <h3 class="card-title">
         <i class="fas fa-bolt mr-2"></i>
@@ -167,7 +150,7 @@
 </div>
 
 <style>
-    /* Cards de Estatísticas */
+    /* Cards de Estatísticas (mantido) */
     .stat-card {
         background: var(--bg-secondary);
         backdrop-filter: blur(12px);
@@ -221,7 +204,26 @@
         font-weight: 600;
     }
 
-    /* Cards Admin */
+    /* Cards de Gráficos */
+    .chart-card {
+        background: var(--bg-secondary);
+        backdrop-filter: blur(12px);
+        padding: 1.5rem;
+        border-radius: 1rem;
+        border: var(--glass-border);
+        box-shadow: var(--glass-shadow);
+    }
+
+    .chart-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0 0 1.5rem 0;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Cards Admin (mantido) */
     .admin-card {
         background: var(--bg-secondary);
         backdrop-filter: blur(12px);
@@ -240,77 +242,7 @@
         align-items: center;
     }
 
-    /* Itens de Atividade */
-    .activity-item {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 0.75rem;
-        border-radius: 0.5rem;
-        background: var(--bg-tertiary);
-    }
-
-    .activity-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.125rem;
-    }
-
-    .activity-content {
-        flex: 1;
-    }
-
-    .activity-title {
-        font-size: 0.875rem;
-        color: var(--text-secondary);
-        margin: 0;
-    }
-
-    .activity-value {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--text-primary);
-        margin: 0;
-    }
-
-    /* Status */
-    .status-item {
-        padding: 0.75rem;
-        border-radius: 0.5rem;
-        background: var(--bg-tertiary);
-    }
-
-    .status-badge {
-        padding: 0.25rem 0.75rem;
-        border-radius: 9999px;
-        font-size: 0.75rem;
-        font-weight: 600;
-    }
-
-    .status-online {
-        background: rgba(34, 197, 94, 0.2);
-        color: #22c55e;
-    }
-
-    .status-bar {
-        width: 100%;
-        height: 6px;
-        background: var(--bg-primary);
-        border-radius: 3px;
-        overflow: hidden;
-    }
-
-    .status-bar-fill {
-        height: 100%;
-        border-radius: 3px;
-        transition: width 0.5s ease;
-    }
-
-    /* Ações Rápidas */
+    /* Ações Rápidas (mantido) */
     .quick-action {
         display: flex;
         flex-direction: column;
@@ -350,4 +282,202 @@
         }
     }
 </style>
+
+<script>
+    // Configuração global do Chart.js
+    Chart.defaults.color = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary');
+    Chart.defaults.borderColor = getComputedStyle(document.documentElement).getPropertyValue('--glass-border');
+
+    // Cores do tema
+    const colors = {
+        primary: '#3b82f6',
+        secondary: '#8b5cf6',
+        success: '#22c55e',
+        warning: '#f59e0b',
+        danger: '#ef4444',
+        info: '#06b6d4'
+    };
+
+    // Carregar dados da API
+    async function loadChartData() {
+        try {
+            const response = await fetch('/admin/api/stats');
+            const data = await response.json();
+
+            // Atualizar cards
+            const summaryResponse = await fetch('/admin/api/stats/summary');
+            const summary = await summaryResponse.json();
+            document.getElementById('new-users-today').textContent = summary.new_users_today;
+            document.getElementById('challenges-today').textContent = summary.challenges_today;
+
+            // Criar gráficos
+            createUsersChart(data.users_timeline);
+            createChallengesChart(data.challenges_daily);
+            createLevelsChart(data.levels_distribution);
+            createPathsChart(data.paths_engagement);
+            createCompletionChart(data.completion_rate);
+            createHourlyChart(data.hourly_activity);
+
+        } catch (error) {
+            console.error('Erro ao carregar dados dos gráficos:', error);
+        }
+    }
+
+    // Gráfico 1: Usuários Ativos (Linha)
+    function createUsersChart(data) {
+        new Chart(document.getElementById('usersChart'), {
+            type: 'line',
+            data: {
+                labels: data.map(d => d.date),
+                datasets: [{
+                    label: 'Novos Usuários',
+                    data: data.map(d => d.count),
+                    borderColor: colors.primary,
+                    backgroundColor: colors.primary + '20',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+
+    // Gráfico 2: Desafios Completados (Barra)
+    function createChallengesChart(data) {
+        new Chart(document.getElementById('challengesChart'), {
+            type: 'bar',
+            data: {
+                labels: data.map(d => d.day),
+                datasets: [{
+                    label: 'Desafios',
+                    data: data.map(d => d.count),
+                    backgroundColor: colors.secondary
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+
+    // Gráfico 3: Distribuição de Níveis (Pizza)
+    function createLevelsChart(data) {
+        new Chart(document.getElementById('levelsChart'), {
+            type: 'doughnut',
+            data: {
+                labels: data.map(d => d.level),
+                datasets: [{
+                    data: data.map(d => d.count),
+                    backgroundColor: [
+                        colors.primary,
+                        colors.secondary,
+                        colors.success,
+                        colors.warning,
+                        colors.danger,
+                        colors.info
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true
+            }
+        });
+    }
+
+    // Gráfico 4: Engajamento por Trilha (Barra Horizontal)
+    function createPathsChart(data) {
+        new Chart(document.getElementById('pathsChart'), {
+            type: 'bar',
+            data: {
+                labels: data.map(d => d.path),
+                datasets: [{
+                    label: 'Usuários',
+                    data: data.map(d => d.users),
+                    backgroundColor: colors.success
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+
+    // Gráfico 5: Taxa de Conclusão (Área)
+    function createCompletionChart(data) {
+        new Chart(document.getElementById('completionChart'), {
+            type: 'line',
+            data: {
+                labels: data.map(d => d.day),
+                datasets: [{
+                    label: 'Taxa (%)',
+                    data: data.map(d => d.rate),
+                    borderColor: colors.success,
+                    backgroundColor: colors.success + '20',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: value => value + '%'
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Gráfico 6: Atividade por Hora (Barra)
+    function createHourlyChart(data) {
+        new Chart(document.getElementById('hourlyChart'), {
+            type: 'bar',
+            data: {
+                labels: Array.from({ length: 24 }, (_, i) => i + 'h'),
+                datasets: [{
+                    label: 'Atividades',
+                    data: data,
+                    backgroundColor: colors.info
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+
+    // Carregar dados ao carregar a página
+    document.addEventListener('DOMContentLoaded', loadChartData);
+
+    // Atualizar a cada 5 minutos
+    setInterval(loadChartData, 300000);
+</script>
 {% endblock %}

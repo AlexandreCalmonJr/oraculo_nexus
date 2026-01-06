@@ -586,6 +586,16 @@ def register_routes(app):
         }
         return render_template('admin/admin_dashboard.html', stats=stats)
 
+    @app.route('/admin/system')
+    @login_required
+    def admin_system():
+        """Página de monitoramento do sistema"""
+        if not current_user.is_admin:
+            flash('Acesso negado.', 'error')
+            return redirect(url_for('user.index'))
+        
+        return render_template('admin/admin_system.html')
+
     @app.route('/admin/users')
     @login_required
     def admin_users():

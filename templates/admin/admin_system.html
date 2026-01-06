@@ -1,0 +1,404 @@
+{% extends 'admin/admin_base.html' %}
+
+{% block title %}Monitoramento do Sistema{% endblock %}
+
+{% block page_title %}Monitoramento Backend{% endblock %}
+
+{% block content %}
+<!-- Status Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <!-- Banco de Dados -->
+    <div class="status-card">
+        <div class="status-header">
+            <i class="fas fa-database fa-2x"></i>
+            <h3>Banco de Dados</h3>
+        </div>
+        <div class="status-body">
+            <div class="status-indicator" id="db-indicator">
+                <span class="status-dot"></span>
+                <span class="status-text">Verificando...</span>
+            </div>
+            <div class="status-details">
+                <p><strong>Tempo de Resposta:</strong> <span id="db-response">-</span></p>
+                <p><strong>Conexões:</strong> <span id="db-connections">-</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- IA (Google Gemini) -->
+    <div class="status-card">
+        <div class="status-header">
+            <i class="fas fa-brain fa-2x"></i>
+            <h3>Google Gemini AI</h3>
+        </div>
+        <div class="status-body">
+            <div class="status-indicator" id="ai-indicator">
+                <span class="status-dot"></span>
+                <span class="status-text">Verificando...</span>
+            </div>
+            <div class="status-details">
+                <p><strong>Modelo:</strong> <span id="ai-model">gemini-2.0-flash-exp</span></p>
+                <p><strong>API Key:</strong> <span id="ai-key">-</span></p>
+                <p><strong>Tempo de Resposta:</strong> <span id="ai-response">-</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Servidor Flask -->
+    <div class="status-card">
+        <div class="status-header">
+            <i class="fas fa-server fa-2x"></i>
+            <h3>Servidor Flask</h3>
+        </div>
+        <div class="status-body">
+            <div class="status-indicator online">
+                <span class="status-dot"></span>
+                <span class="status-text">Online</span>
+            </div>
+            <div class="status-details">
+                <p><strong>Python:</strong> <span id="python-version">-</span></p>
+                <p><strong>Ambiente:</strong> <span id="flask-env">-</span></p>
+                <p><strong>Uptime:</strong> <span id="server-uptime">-</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recursos do Servidor -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <!-- CPU e Memória -->
+    <div class="resource-card">
+        <h3 class="resource-title">
+            <i class="fas fa-microchip mr-2"></i>
+            Recursos do Sistema
+        </h3>
+        <div class="resource-item">
+            <div class="resource-label">
+                <span>CPU</span>
+                <span id="cpu-percent">0%</span>
+            </div>
+            <div class="resource-bar">
+                <div class="resource-bar-fill" id="cpu-bar" style="width: 0%"></div>
+            </div>
+        </div>
+        <div class="resource-item">
+            <div class="resource-label">
+                <span>Memória</span>
+                <span id="memory-percent">0%</span>
+            </div>
+            <div class="resource-bar">
+                <div class="resource-bar-fill" id="memory-bar" style="width: 0%"></div>
+            </div>
+            <p class="resource-detail"><span id="memory-used">0 GB</span> / <span id="memory-total">0 GB</span></p>
+        </div>
+        <div class="resource-item">
+            <div class="resource-label">
+                <span>Disco</span>
+                <span id="disk-percent">0%</span>
+            </div>
+            <div class="resource-bar">
+                <div class="resource-bar-fill" id="disk-bar" style="width: 0%"></div>
+            </div>
+            <p class="resource-detail"><span id="disk-used">0 GB</span> / <span id="disk-total">0 GB</span></p>
+        </div>
+    </div>
+
+    <!-- Logs em Tempo Real -->
+    <div class="resource-card">
+        <h3 class="resource-title">
+            <i class="fas fa-terminal mr-2"></i>
+            Status em Tempo Real
+        </h3>
+        <div class="log-container" id="status-log">
+            <p class="log-entry"><span class="log-time">--:--:--</span> Iniciando monitoramento...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Última Atualização -->
+<div class="text-center text-sm text-gray-500 dark:text-gray-400">
+    Última atualização: <span id="last-update">-</span> | Atualização automática a cada 10 segundos
+</div>
+
+<style>
+    /* Status Cards */
+    .status-card {
+        background: var(--bg-secondary);
+        backdrop-filter: blur(12px);
+        padding: 1.5rem;
+        border-radius: 1rem;
+        border: var(--glass-border);
+        box-shadow: var(--glass-shadow);
+    }
+
+    .status-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        color: var(--text-primary);
+    }
+
+    .status-header i {
+        color: var(--primary-500);
+    }
+
+    .status-header h3 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .status-indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        background: var(--bg-tertiary);
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .status-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #6b7280;
+        animation: pulse 2s infinite;
+    }
+
+    .status-indicator.online .status-dot {
+        background: #22c55e;
+    }
+
+    .status-indicator.offline .status-dot {
+        background: #ef4444;
+        animation: none;
+    }
+
+    .status-text {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .status-details {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+    }
+
+    .status-details p {
+        margin: 0.5rem 0;
+    }
+
+    /* Resource Cards */
+    .resource-card {
+        background: var(--bg-secondary);
+        backdrop-filter: blur(12px);
+        padding: 1.5rem;
+        border-radius: 1rem;
+        border: var(--glass-border);
+        box-shadow: var(--glass-shadow);
+    }
+
+    .resource-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0 0 1.5rem 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .resource-item {
+        margin-bottom: 1.5rem;
+    }
+
+    .resource-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .resource-bar {
+        width: 100%;
+        height: 8px;
+        background: var(--bg-tertiary);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .resource-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary-500), var(--secondary-500));
+        border-radius: 4px;
+        transition: width 0.5s ease;
+    }
+
+    .resource-detail {
+        margin: 0.5rem 0 0 0;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+    }
+
+    /* Logs */
+    .log-container {
+        background: var(--bg-tertiary);
+        border-radius: 0.5rem;
+        padding: 1rem;
+        height: 300px;
+        overflow-y: auto;
+        font-family: 'Fira Code', monospace;
+        font-size: 0.75rem;
+    }
+
+    .log-entry {
+        margin: 0.25rem 0;
+        color: var(--text-secondary);
+    }
+
+    .log-time {
+        color: var(--primary-500);
+        margin-right: 0.5rem;
+    }
+
+    .log-success {
+        color: #22c55e;
+    }
+
+    .log-error {
+        color: #ef4444;
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.5;
+        }
+    }
+</style>
+
+<script>
+    let updateInterval;
+
+    async function updateSystemStatus() {
+        try {
+            const response = await fetch('/admin/api/system/status');
+            const data = await response.json();
+
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString();
+
+            // Atualizar Banco de Dados
+            const dbIndicator = document.getElementById('db-indicator');
+            if (data.database.online) {
+                dbIndicator.classList.add('online');
+                dbIndicator.classList.remove('offline');
+                dbIndicator.querySelector('.status-text').textContent = 'Online';
+                document.getElementById('db-response').textContent = `${data.database.response_time.toFixed(2)} ms`;
+                addLog(`✅ Banco de dados online (${data.database.response_time.toFixed(2)}ms)`, 'success');
+            } else {
+                dbIndicator.classList.add('offline');
+                dbIndicator.classList.remove('online');
+                dbIndicator.querySelector('.status-text').textContent = 'Offline';
+                addLog('❌ Banco de dados offline', 'error');
+            }
+
+            // Atualizar IA
+            const aiIndicator = document.getElementById('ai-indicator');
+            if (data.ai.online) {
+                aiIndicator.classList.add('online');
+                aiIndicator.classList.remove('offline');
+                aiIndicator.querySelector('.status-text').textContent = 'Online';
+                document.getElementById('ai-response').textContent = `${data.ai.response_time.toFixed(2)} ms`;
+                addLog(`✅ Google Gemini AI online (${data.ai.response_time.toFixed(2)}ms)`, 'success');
+            } else {
+                aiIndicator.classList.add('offline');
+                aiIndicator.classList.remove('online');
+                aiIndicator.querySelector('.status-text').textContent = data.ai.api_key_configured ? 'Erro' : 'Não Configurada';
+            }
+            document.getElementById('ai-key').textContent = data.ai.api_key_configured ? 'Configurada ✓' : 'Não Configurada ✗';
+
+            // Atualizar Servidor
+            document.getElementById('python-version').textContent = data.server.python_version;
+            document.getElementById('flask-env').textContent = data.server.flask_env;
+            document.getElementById('server-uptime').textContent = data.server.uptime;
+
+            // Atualizar Recursos
+            updateResource('cpu', data.server.cpu_percent);
+            updateResource('memory', data.server.memory_percent);
+            updateResource('disk', data.server.disk_percent);
+
+            document.getElementById('memory-used').textContent = data.server.memory_used;
+            document.getElementById('memory-total').textContent = data.server.memory_total;
+            document.getElementById('disk-used').textContent = data.server.disk_used;
+            document.getElementById('disk-total').textContent = data.server.disk_total;
+
+            // Atualizar timestamp
+            document.getElementById('last-update').textContent = timeStr;
+
+        } catch (error) {
+            console.error('Erro ao atualizar status:', error);
+            addLog('❌ Erro ao atualizar status do sistema', 'error');
+        }
+    }
+
+    function updateResource(name, percent) {
+        document.getElementById(`${name}-percent`).textContent = `${percent.toFixed(1)}%`;
+        const bar = document.getElementById(`${name}-bar`);
+        bar.style.width = `${percent}%`;
+
+        // Mudar cor baseado no uso
+        if (percent > 90) {
+            bar.style.background = '#ef4444';
+        } else if (percent > 70) {
+            bar.style.background = '#f59e0b';
+        } else {
+            bar.style.background = 'linear-gradient(90deg, var(--primary-500), var(--secondary-500))';
+        }
+    }
+
+    function addLog(message, type = '') {
+        const logContainer = document.getElementById('status-log');
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString();
+
+        const logEntry = document.createElement('p');
+        logEntry.className = `log-entry log-${type}`;
+        logEntry.innerHTML = `<span class="log-time">${timeStr}</span> ${message}`;
+
+        logContainer.appendChild(logEntry);
+
+        // Manter apenas últimas 50 entradas
+        while (logContainer.children.length > 50) {
+            logContainer.removeChild(logContainer.firstChild);
+        }
+
+        // Scroll para o final
+        logContainer.scrollTop = logContainer.scrollHeight;
+    }
+
+    // Iniciar monitoramento
+    document.addEventListener('DOMContentLoaded', () => {
+        addLog('🚀 Monitoramento iniciado');
+        updateSystemStatus();
+
+        // Atualizar a cada 10 segundos
+        updateInterval = setInterval(updateSystemStatus, 10000);
+    });
+
+    // Limpar intervalo ao sair
+    window.addEventListener('beforeunload', () => {
+        if (updateInterval) {
+            clearInterval(updateInterval);
+        }
+    });
+</script>
+{% endblock %}

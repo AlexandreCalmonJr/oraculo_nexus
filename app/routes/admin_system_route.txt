@@ -1,0 +1,11 @@
+﻿# Adicionar ao legacy_routes.py ou criar nova rota
+
+@app.route('/admin/system')
+@login_required
+def admin_system():
+    '''Página de monitoramento do sistema'''
+    if not current_user.is_admin:
+        flash('Acesso negado.', 'error')
+        return redirect(url_for('user.index'))
+    
+    return render_template('admin/admin_system.html')
