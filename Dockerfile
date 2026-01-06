@@ -22,4 +22,4 @@ COPY . .
 ENV PORT=8080
 
 # Comando de inicialização
-CMD gunicorn run:app --workers 1 --timeout 120 --bind 0.0.0.0:$PORT
+CMD gunicorn run:app --worker-class eventlet --workers 1 --timeout 120 --bind 0.0.0.0:$PORT

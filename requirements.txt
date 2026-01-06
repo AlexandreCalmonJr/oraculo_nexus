@@ -18,3 +18,4 @@ flask-socketio
 python-socketio
 APScheduler
 eventlet
+psutil
