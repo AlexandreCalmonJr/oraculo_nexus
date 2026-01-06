@@ -1,1 +1,1 @@
-web: python -m spacy download pt_core_news_sm && gunicorn run:app --workers 1 --timeout 120 --no-sendfile
+web: python -m spacy download pt_core_news_sm && gunicorn run:app --worker-class eventlet --workers 1 --timeout 120 --no-sendfile
