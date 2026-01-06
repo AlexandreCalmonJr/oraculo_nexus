@@ -43,7 +43,7 @@ def register_socketio_events(socketio):
     def handle_join_admin_room():
         """Permite que admins entrem na sala de admins"""
         if current_user.is_authenticated and current_user.is_admin:
-            join_room('admins')
+            join_room('admins', namespace='/')
             emit('room_joined', {'room': 'admins'})
     
     @socketio.on('leave_user_room')

@@ -29,6 +29,7 @@ class UserPathProgress(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     path_id = db.Column(db.Integer, db.ForeignKey('learning_path.id'), nullable=False)
-    completed_at = db.Column(db.DateTime, default=datetime.utcnow)
+    started_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    completed_at = db.Column(db.DateTime, nullable=True)
     user = db.relationship('User')
     path = db.relationship('LearningPath')
