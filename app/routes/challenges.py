@@ -110,16 +110,37 @@ def submit_challenge(challenge_id):
         current_user.points += challenge.points_reward
         
         # Atualizar nível se necessário
-        from app.models.levels import Level
+        from app.models.gamification import Level
         new_level = Level.query.filter(
             Level.min_points <= current_user.points
         ).order_by(Level.min_points.desc()).first()
         
+        level_up = False
         if new_level and (not current_user.level or new_level.id != current_user.level_id):
             current_user.level_id = new_level.id
+            level_up = True
             flash(f'🎉 Parabéns! Você subiu para o nível {new_level.name}!', 'success')
         
         db.session.commit()
+        
+        # Enviar notificações
+        from app.services.notification_service import notification_service
+        if notification_service:
+            # Notificação de desafio completado
+            notification_service.notify_challenge_completed(
+                current_user.name,
+                current_user.id,
+                challenge.title,
+                challenge.points_reward
+            )
+            
+            # Notificação de level up se aplicável
+            if level_up:
+                notification_service.notify_level_up(
+                    current_user.name,
+                    current_user.id,
+                    new_level.name
+                )
         
         # Limpar tentativas
         session.pop(attempts_key, None)

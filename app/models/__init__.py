@@ -16,6 +16,7 @@ from app.models.events import (
     GlobalEvent, GlobalEventContribution
 )
 from app.models.chat import ChatMessage, Ticket
+from app.models.notifications import Notification
 
 __all__ = [
     'User', 'InvitationCode',
@@ -27,5 +28,6 @@ __all__ = [
     'LearningPath', 'PathChallenge', 'UserPathProgress',
     'ScavengerHunt', 'ScavengerHuntStep', 'UserHuntProgress',
     'GlobalEvent', 'GlobalEventContribution',
-    'ChatMessage', 'Ticket'
+    'ChatMessage', 'Ticket',
+    'Notification'
 ]

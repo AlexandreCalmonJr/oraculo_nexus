@@ -85,6 +85,11 @@ def register():
         invitation.used_by_user_id = user.id
         db.session.commit()
         
+        # Enviar notificação de boas-vindas
+        from app.services.notification_service import notification_service
+        if notification_service:
+            notification_service.notify_new_user(name, user.id)
+        
         flash('Registro concluído! Faça login.', 'success')
         return redirect(url_for('auth.login'))
     

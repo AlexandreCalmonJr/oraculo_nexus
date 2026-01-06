@@ -47,12 +47,29 @@ def create_app(config_class=Config):
     login_manager.login_view = 'auth.login'
     cache.init_app(app, config=Config.get_cache_config())
     
+    # Inicializar SocketIO para notificações em tempo real
+    from flask_socketio import SocketIO
+    socketio = SocketIO(app, cors_allowed_origins="*")
+    
+    # Inicializar serviço de notificações
+    from app.services.notification_service import init_notification_service
+    init_notification_service(socketio)
+    
+    # Registrar event handlers do SocketIO
+    from app.socketio_events import register_socketio_events
+    register_socketio_events(socketio)
+    
+    # Armazenar socketio no app para acesso posterior
+    app.socketio = socketio
+    
     # Registrar blueprints
     from app.routes.auth import auth_bp
     from app.routes.user import user_bp
+    from app.routes.notifications import notifications_bp
     
     app.register_blueprint(auth_bp)
     app.register_blueprint(user_bp)
+    app.register_blueprint(notifications_bp)
     
     # Registrar blueprint da API admin
     from app.routes.admin_api import admin_api_bp

@@ -1,0 +1,374 @@
+{% extends "admin/admin_base.html" %}
+
+{% block title %}Gerenciar Notificacoes - Admin{% endblock %}
+
+{% block content %}
+<div class="admin-notifications-wrapper">
+    <div class="admin-header">
+        <h1 class="admin-title">
+            <i class="fas fa-bell"></i> Gerenciamento de Notificacoes
+        </h1>
+    </div>
+
+    <!-- Estatisticas -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="stat-content">
+                <p class="stat-label">Total de Notificacoes</p>
+                <p class="stat-value" id="totalNotifications">0</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;">
+                <i class="fas fa-envelope"></i>
+            </div>
+            <div class="stat-content">
+                <p class="stat-label">Nao Lidas</p>
+                <p class="stat-value" id="unreadNotifications">0</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(34, 197, 94, 0.15); color: #22c55e;">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <p class="stat-label">Total de Usuarios</p>
+                <p class="stat-value" id="totalUsers">0</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enviar Notificacao Broadcast -->
+    <div class="broadcast-section">
+        <h2 class="section-title">
+            <i class="fas fa-broadcast-tower"></i> Enviar Notificacao Global
+        </h2>
+
+        <form id="broadcastForm" class="broadcast-form">
+            {{ form.hidden_tag() }}
+
+            <div class="form-group">
+                <label for="notificationType">Tipo</label>
+                <select id="notificationType" name="type" class="form-control">
+                    <option value="info">Info</option>
+                    <option value="success">Sucesso</option>
+                    <option value="warning">Aviso</option>
+                    <option value="error">Erro</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="notificationCategory">Categoria</label>
+                <select id="notificationCategory" name="category" class="form-control">
+                    <option value="system">Sistema</option>
+                    <option value="event">Evento</option>
+                    <option value="general">Geral</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="notificationMessage">Mensagem</label>
+                <textarea id="notificationMessage" name="message" class="form-control" rows="3"
+                    placeholder="Digite a mensagem da notificacao..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary">
+                <i class="fas fa-paper-plane"></i> Enviar Notificacao
+            </button>
+        </form>
+    </div>
+
+    <!-- Notificacoes por Categoria -->
+    <div class="categories-section">
+        <h2 class="section-title">
+            <i class="fas fa-chart-bar"></i> Notificacoes por Categoria
+        </h2>
+        <div id="categoriesChart" class="categories-list">
+            <!-- Sera preenchido via JavaScript -->
+        </div>
+    </div>
+</div>
+
+<style>
+    .admin-notifications-wrapper {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .admin-header {
+        margin-bottom: 2rem;
+    }
+
+    .admin-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .admin-title i {
+        color: var(--primary-500);
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: var(--bg-secondary);
+        backdrop-filter: blur(12px);
+        border: var(--glass-border);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--glass-shadow);
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .stat-content {
+        flex: 1;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin: 0 0 0.25rem 0;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin: 0;
+    }
+
+    /* Sections */
+    .broadcast-section,
+    .categories-section {
+        background: var(--bg-secondary);
+        backdrop-filter: blur(12px);
+        border: var(--glass-border);
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0 0 1.5rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .section-title i {
+        color: var(--primary-500);
+    }
+
+    /* Form */
+    .broadcast-form {
+        max-width: 600px;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        color: var(--text-primary);
+        font-size: 0.9375rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary-500);
+        box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .btn-primary {
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, var(--primary-500), var(--secondary-500));
+        border: none;
+        border-radius: 0.5rem;
+        color: white;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.4);
+    }
+
+    /* Categories */
+    .categories-list {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .category-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: var(--bg-tertiary);
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .category-item:hover {
+        background: var(--bg-quaternary);
+    }
+
+    .category-name {
+        font-size: 0.9375rem;
+        font-weight: 500;
+        color: var(--text-primary);
+        text-transform: capitalize;
+    }
+
+    .category-count {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--primary-500);
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .admin-notifications-wrapper {
+            padding: 1rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .broadcast-form {
+            max-width: 100%;
+        }
+    }
+</style>
+
+<script>
+    // Carregar estatisticas
+    async function loadStats() {
+        try {
+            const response = await fetch('/notifications/admin/api/stats');
+            const data = await response.json();
+
+            if (data.success) {
+                document.getElementById('totalNotifications').textContent = data.stats.total_notifications;
+                document.getElementById('unreadNotifications').textContent = data.stats.unread_notifications;
+                document.getElementById('totalUsers').textContent = data.stats.total_users;
+
+                // Renderizar categorias
+                const categoriesChart = document.getElementById('categoriesChart');
+                categoriesChart.innerHTML = data.stats.categories.map(cat => `
+                    <div class="category-item">
+                        <span class="category-name">${cat.category}</span>
+                        <span class="category-count">${cat.count}</span>
+                    </div>
+                `).join('');
+            }
+        } catch (error) {
+            console.error('Erro ao carregar estatisticas:', error);
+        }
+    }
+
+    // Enviar notificacao broadcast
+    document.getElementById('broadcastForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const data = {
+            type: formData.get('type'),
+            category: formData.get('category'),
+            message: formData.get('message')
+        };
+
+        try {
+            const response = await fetch('/notifications/admin/api/broadcast', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                alert('Notificacao enviada com sucesso!');
+                e.target.reset();
+            } else {
+                alert('Erro: ' + result.error);
+            }
+        } catch (error) {
+            console.error('Erro ao enviar notificacao:', error);
+            alert('Erro ao enviar notificacao');
+        }
+    });
+
+    // Carregar ao iniciar
+    document.addEventListener('DOMContentLoaded', () => {
+        loadStats();
+
+        // Atualizar a cada 30 segundos
+        setInterval(loadStats, 30000);
+    });
+</script>
+{% endblock %}
