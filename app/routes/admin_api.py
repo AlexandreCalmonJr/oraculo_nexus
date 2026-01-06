@@ -26,31 +26,50 @@ def get_stats():
         return jsonify({'error': 'Acesso negado'}), 403
     
     # Período de análise (últimos 30 dias)
-    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+    now = datetime.utcnow()
+    thirty_days_ago = now - timedelta(days=30)
+    seven_days_ago = now - timedelta(days=7)
     
     # ===== GRÁFICO 1: Usuários Ativos (Linha Temporal) =====
+    # Otimização: Query única com GROUP BY
+    timeline_data = db.session.query(
+        func.date(User.registered_at).label('date'),
+        func.count(User.id).label('count')
+    ).filter(User.registered_at >= thirty_days_ago)\
+     .group_by(func.date(User.registered_at))\
+     .all()
+    
+    # Converter para dicionário para acesso rápido
+    timeline_dict = {str(d[0]): d[1] for d in timeline_data}
+    
     users_timeline = []
     for i in range(30):
-        date = datetime.utcnow() - timedelta(days=29-i)
-        count = User.query.filter(
-            func.date(User.registered_at) == date.date()
-        ).count()
+        date = now - timedelta(days=29-i)
+        date_str = date.strftime('%Y-%m-%d')
         users_timeline.append({
             'date': date.strftime('%d/%m'),
-            'count': count
+            'count': timeline_dict.get(date_str, 0)
         })
 
     
     # ===== GRÁFICO 2: Desafios Completados (Barra por Dia) =====
+    # Otimização: Query única com GROUP BY
+    challenges_data = db.session.query(
+        func.date(UserChallenge.completed_at).label('date'),
+        func.count(UserChallenge.id).label('count')
+    ).filter(UserChallenge.completed_at >= seven_days_ago)\
+     .group_by(func.date(UserChallenge.completed_at))\
+     .all()
+     
+    challenges_dict = {str(d[0]): d[1] for d in challenges_data}
+    
     challenges_daily = []
     for i in range(7):  # Última semana
-        date = datetime.utcnow() - timedelta(days=6-i)
-        count = UserChallenge.query.filter(
-            func.date(UserChallenge.completed_at) == date.date()
-        ).count()
+        date = now - timedelta(days=6-i)
+        date_str = date.strftime('%Y-%m-%d')
         challenges_daily.append({
             'day': date.strftime('%a'),
-            'count': count
+            'count': challenges_dict.get(date_str, 0)
         })
     
     # ===== GRÁFICO 3: Distribuição de Níveis (Pizza) =====
@@ -82,16 +101,49 @@ def get_stats():
     ]
     
     # ===== GRÁFICO 5: Taxa de Conclusão (Área) =====
+    # Otimização: Calcular totais iniciais e depois somar incrementos
+    # 1. Totais antes do período
+    start_date = seven_days_ago.date()
+    
+    initial_started = UserPathProgress.query.filter(
+        func.date(UserPathProgress.started_at) < start_date
+    ).count()
+    
+    initial_completed = UserPathProgress.query.filter(
+        func.date(UserPathProgress.completed_at) < start_date
+    ).count()
+    
+    # 2. Incrementos diários
+    started_daily = db.session.query(
+        func.date(UserPathProgress.started_at).label('date'),
+        func.count(UserPathProgress.id)
+    ).filter(UserPathProgress.started_at >= start_date)\
+     .group_by(func.date(UserPathProgress.started_at))\
+     .all()
+     
+    completed_daily = db.session.query(
+        func.date(UserPathProgress.completed_at).label('date'),
+        func.count(UserPathProgress.id)
+    ).filter(UserPathProgress.completed_at >= start_date)\
+     .group_by(func.date(UserPathProgress.completed_at))\
+     .all()
+    
+    started_dict = {str(d[0]): d[1] for d in started_daily}
+    completed_dict = {str(d[0]): d[1] for d in completed_daily}
+    
     completion_rate = []
+    current_started = initial_started
+    current_completed = initial_completed
+    
     for i in range(7):
-        date = datetime.utcnow() - timedelta(days=6-i)
-        started = UserPathProgress.query.filter(
-            func.date(UserPathProgress.started_at) <= date.date()
-        ).count()
-        completed = UserPathProgress.query.filter(
-            func.date(UserPathProgress.completed_at) <= date.date()
-        ).count()
-        rate = (completed / started * 100) if started > 0 else 0
+        date = now - timedelta(days=6-i)
+        date_str = date.strftime('%Y-%m-%d')
+        
+        # Adicionar incrementos do dia (acumulativo)
+        current_started += started_dict.get(date_str, 0)
+        current_completed += completed_dict.get(date_str, 0)
+        
+        rate = (current_completed / current_started * 100) if current_started > 0 else 0
         completion_rate.append({
             'day': date.strftime('%a'),
             'rate': round(rate, 1)

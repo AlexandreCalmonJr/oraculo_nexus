@@ -36,15 +36,26 @@ def register_socketio_events(socketio):
         if current_user.is_authenticated:
             user_id = data.get('user_id')
             if user_id == current_user.id:
-                join_room(f'user_{user_id}')
-                emit('room_joined', {'room': f'user_{user_id}'})
+                try:
+                    ns = request.namespace if request.namespace else '/'
+                    join_room(f'user_{user_id}', namespace=ns)
+                    emit('room_joined', {'room': f'user_{user_id}'})
+                except Exception as e:
+                    print(f"[SocketIO Error] Falha ao entrar na sala user: {e}")
     
     @socketio.on('join_admin_room')
     def handle_join_admin_room():
         """Permite que admins entrem na sala de admins"""
         if current_user.is_authenticated and current_user.is_admin:
-            join_room('admins', namespace='/')
-            emit('room_joined', {'room': 'admins'})
+            try:
+                # Tentar usar o namespace da requisição atual
+                ns = request.namespace if request.namespace else '/'
+                join_room('admins', namespace=ns)
+                emit('room_joined', {'room': 'admins'})
+            except ValueError as e:
+                print(f"[SocketIO Error] Falha ao entrar na sala admin: {e}. SID: {request.sid}, Namespace: {request.namespace}")
+            except Exception as e:
+                print(f"[SocketIO Error] Erro inesperado em join_admin_room: {e}")
     
     @socketio.on('leave_user_room')
     def handle_leave_user_room(data):
