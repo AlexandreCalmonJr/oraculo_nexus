@@ -1,4 +1,4 @@
-{% extends 'admin/admin_base.html' %}
+﻿{% extends 'admin/admin_base.html' %}
 
 {% block title %}Editar Trilha - Service Desk{% endblock %}
 {% block page_title %}Editar Trilha: {{ path.name }}{% endblock %}
@@ -11,7 +11,7 @@
             <input type="text" id="name" name="name" value="{{ path.name }}" class="w-full p-2 mt-1 border rounded dark:bg-gray-700 dark:border-gray-600" required>
         </div>
         <div class="mb-4">
-            <label for="description" class="block text-sm font-medium">Descrição</label>
+            <label for="description" class="block text-sm font-medium">DescriÃ§Ã£o</label>
             <textarea id="description" name="description" rows="3" class="w-full p-2 mt-1 border rounded dark:bg-gray-700 dark:border-gray-600">{{ path.description }}</textarea>
         </div>
         <div class="mb-4">
@@ -21,13 +21,13 @@
         <div class="mb-4">
             <label for="is_active" class="flex items-center">
                 <input type="checkbox" id="is_active" name="is_active" class="h-4 w-4 text-blue-600 border-gray-300 rounded" {% if path.is_active %}checked{% endif %}>
-                <span class="ml-2 text-sm">Trilha Ativa (visível para os alunos)</span>
+                <span class="ml-2 text-sm">Trilha Ativa (visÃ­vel para os alunos)</span>
             </label>
         </div>
 
         <div class="flex justify-end space-x-4">
             <a href="{{ url_for('admin_paths') }}" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition">Cancelar</a>
-            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">Salvar Alterações</button>
+            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">Salvar AlteraÃ§Ãµes</button>
         </div>
     </form>
 </div>

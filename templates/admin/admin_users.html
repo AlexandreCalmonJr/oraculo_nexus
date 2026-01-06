@@ -1,22 +1,22 @@
-{% extends 'admin/admin_base.html' %}
+﻿{% extends 'admin/admin_base.html' %}
 
 {% block title %}Admin - Utilizadores - Service Desk{% endblock %}
 {% block page_title %}Gerir Utilizadores{% endblock %}
 
 {% block content %}
 <div class="space-y-8">
-    <!-- Gerador de Código de Convite -->
+    <!-- Gerador de CÃ³digo de Convite -->
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border dark:border-gray-700">
-        <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">Gerar Código de Convite Avulso</h2>
+        <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">Gerar CÃ³digo de Convite Avulso</h2>
         <form method="POST" action="{{ url_for('generate_invitation') }}" class="inline" onsubmit="return handleGenerateSingleCode(event)">
             {{ form.csrf_token }}
             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
-                Gerar Novo Código
+                Gerar Novo CÃ³digo
             </button>
         </form>
         <div class="mt-4 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg inline-flex items-center">
-            <span class="font-semibold text-gray-700 dark:text-gray-300 mr-2">Código Gerado:</span>
-            <code id="single-invitation-code" class="text-gray-900 dark:text-gray-100 font-mono">Clique no botão para gerar...</code>
+            <span class="font-semibold text-gray-700 dark:text-gray-300 mr-2">CÃ³digo Gerado:</span>
+            <code id="single-invitation-code" class="text-gray-900 dark:text-gray-100 font-mono">Clique no botÃ£o para gerar...</code>
         </div>
     </div>
 
@@ -30,9 +30,9 @@
                         <th scope="col" class="py-3 px-6">Nome</th>
                         <th scope="col" class="py-3 px-6">Email</th>
                         <th scope="col" class="py-3 px-6">Pontos</th>
-                        <th scope="col" class="py-3 px-6">Nível</th>
+                        <th scope="col" class="py-3 px-6">NÃ­vel</th>
                         <th scope="col" class="py-3 px-6">Admin</th>
-                        <th scope="col" class="py-3 px-6">Ações</th>
+                        <th scope="col" class="py-3 px-6">AÃ§Ãµes</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,7 +42,7 @@
                         <td class="py-4 px-6">{{ user.email }}</td>
                         <td class="py-4 px-6">{{ user.points }}</td>
                         <td class="py-4 px-6">{{ user.level.name if user.level else 'N/A' }}</td>
-                        <td class="py-4 px-6">{{ 'Sim' if user.is_admin else 'Não' }}</td>
+                        <td class="py-4 px-6">{{ 'Sim' if user.is_admin else 'NÃ£o' }}</td>
                         <td class="py-4 px-6 flex items-center space-x-4">
                             {% if user.id != current_user.id %}
                                 <!-- Tornar/Remover Admin -->
@@ -53,7 +53,7 @@
                                     </button>
                                 </form>
                                 <!-- Apagar Utilizador -->
-                                <form method="POST" action="{{ url_for('admin_delete_user', user_id=user.id) }}" onsubmit="return confirm('Tem a certeza que quer apagar este utilizador? Esta ação é irreversível.');" class="inline">
+                                <form method="POST" action="{{ url_for('admin_delete_user', user_id=user.id) }}" onsubmit="return confirm('Tem a certeza que quer apagar este utilizador? Esta aÃ§Ã£o Ã© irreversÃ­vel.');" class="inline">
                                     {{ form.csrf_token }}
                                     <button type="submit" class="font-medium text-red-600 dark:text-red-500 hover:underline">
                                         Apagar
@@ -86,11 +86,11 @@
             if (data.code) {
                 codeSpan.textContent = data.code;
             } else {
-                codeSpan.textContent = data.error || 'Erro ao gerar código.';
+                codeSpan.textContent = data.error || 'Erro ao gerar cÃ³digo.';
             }
         } catch (error) {
             console.error('Fetch error:', error);
-            codeSpan.textContent = 'Erro de comunicação com o servidor.';
+            codeSpan.textContent = 'Erro de comunicaÃ§Ã£o com o servidor.';
         }
         return false;
     }

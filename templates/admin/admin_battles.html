@@ -1,4 +1,4 @@
-{% extends 'admin/admin_base.html' %}
+﻿{% extends 'admin/admin_base.html' %}
 
 {% block title %}Admin - Batalhas de Times{% endblock %}
 {% block page_title %}Gerir Batalhas de Times{% endblock %}
@@ -8,7 +8,7 @@
 
     <div class="mb-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
         <h3 class="font-semibold">Finalizar Batalhas Terminadas</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Clique no botão abaixo para verificar se alguma batalha ativa já passou do seu tempo limite. O sistema irá calcular os vencedores e distribuir os pontos de recompensa.</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Clique no botÃ£o abaixo para verificar se alguma batalha ativa jÃ¡ passou do seu tempo limite. O sistema irÃ¡ calcular os vencedores e distribuir os pontos de recompensa.</p>
         <form method="POST" action="{{ url_for('trigger_finalize_battles') }}">
             {{ form.csrf_token }}
             <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
@@ -17,7 +17,7 @@
         </form>
     </div>
 
-    <h2 class="text-xl font-semibold mb-4">Histórico de Batalhas</h2>
+    <h2 class="text-xl font-semibold mb-4">HistÃ³rico de Batalhas</h2>
     <div class="overflow-x-auto">
         <table class="w-full text-sm text-left">
             <thead class="text-xs uppercase bg-gray-50 dark:bg-gray-700">
@@ -27,7 +27,7 @@
                     <th class="py-3 px-6">Estado</th>
                     <th class="py-3 px-6">Termina em</th>
                     <th class="py-3 px-6">Vencedor</th>
-                    <th class="py-3 px-6">Ações</th>
+                    <th class="py-3 px-6">AÃ§Ãµes</th>
                 </tr>
             </thead>
             <tbody>

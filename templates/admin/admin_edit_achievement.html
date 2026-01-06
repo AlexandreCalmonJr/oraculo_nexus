@@ -1,4 +1,4 @@
-{% extends 'admin/admin_base.html' %}
+﻿{% extends 'admin/admin_base.html' %}
 
 {% block title %}Editar Conquista - Service Desk{% endblock %}
 {% block page_title %}Editar Conquista: {{ achievement.name }}{% endblock %}
@@ -12,21 +12,21 @@
                 <input type="text" id="name" name="name" value="{{ achievement.name }}" class="w-full p-2 mt-1 border rounded dark:bg-gray-700 dark:border-gray-600" required>
             </div>
             <div>
-                <label for="icon" class="block text-sm font-medium">Ícone (FontAwesome)</label>
+                <label for="icon" class="block text-sm font-medium">Ãcone (FontAwesome)</label>
                 <input type="text" id="icon" name="icon" value="{{ achievement.icon }}" class="w-full p-2 mt-1 border rounded dark:bg-gray-700 dark:border-gray-600" required>
             </div>
         </div>
         <div class="mt-4">
-            <label for="description" class="block text-sm font-medium">Descrição</label>
+            <label for="description" class="block text-sm font-medium">DescriÃ§Ã£o</label>
             <textarea id="description" name="description" rows="2" class="w-full p-2 mt-1 border rounded dark:bg-gray-700 dark:border-gray-600" required>{{ achievement.description }}</textarea>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <div>
                 <label for="trigger_type" class="block text-sm font-medium">Tipo de Gatilho</label>
                 <select id="trigger_type" name="trigger_type" class="w-full p-2 mt-1 border rounded dark:bg-gray-700 dark:border-gray-600" required>
-                    <option value="challenges_completed" {% if achievement.trigger_type == 'challenges_completed' %}selected{% endif %}>Nº de Desafios Completados</option>
-                    <option value="points_earned" {% if achievement.trigger_type == 'points_earned' %}selected{% endif %}>Nº de Pontos Ganhos</option>
-                    <option value="paths_completed" {% if achievement.trigger_type == 'paths_completed' %}selected{% endif %}>Nº de Trilhas Completadas</option>
+                    <option value="challenges_completed" {% if achievement.trigger_type == 'challenges_completed' %}selected{% endif %}>NÂº de Desafios Completados</option>
+                    <option value="points_earned" {% if achievement.trigger_type == 'points_earned' %}selected{% endif %}>NÂº de Pontos Ganhos</option>
+                    <option value="paths_completed" {% if achievement.trigger_type == 'paths_completed' %}selected{% endif %}>NÂº de Trilhas Completadas</option>
                     <option value="first_team_join" {% if achievement.trigger_type == 'first_team_join' %}selected{% endif %}>Entrar num Time</option>
                 </select>
             </div>
@@ -38,7 +38,7 @@
 
         <div class="flex justify-end space-x-4 mt-6">
             <a href="{{ url_for('admin_achievements') }}" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition">Cancelar</a>
-            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">Salvar Alterações</button>
+            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">Salvar AlteraÃ§Ãµes</button>
         </div>
     </form>
 </div>

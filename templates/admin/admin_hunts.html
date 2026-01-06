@@ -1,13 +1,13 @@
-{% extends 'admin/admin_base.html' %}
+﻿{% extends 'admin/admin_base.html' %}
 
-{% block title %}Admin - Caça ao Tesouro{% endblock %}
-{% block page_title %}Gerir Caça ao Tesouro{% endblock %}
+{% block title %}Admin - CaÃ§a ao Tesouro{% endblock %}
+{% block page_title %}Gerir CaÃ§a ao Tesouro{% endblock %}
 
 {% block content %}
 <div class="container mx-auto px-4 py-8">
     
     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg mb-8">
-        <h2 class="text-xl font-semibold mb-4">Criar Nova Caça ao Tesouro</h2>
+        <h2 class="text-xl font-semibold mb-4">Criar Nova CaÃ§a ao Tesouro</h2>
         <form method="POST" action="{{ url_for('admin_hunts') }}" class="space-y-4">
             {{ form.csrf_token }}
             <input type="hidden" name="action" value="create_hunt">
@@ -16,7 +16,7 @@
                 <input type="text" name="name" required class="mt-1 block w-full rounded-md dark:bg-gray-700 border-gray-300 dark:border-gray-600 shadow-sm">
             </div>
             <div>
-                <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descrição</label>
+                <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">DescriÃ§Ã£o</label>
                 <textarea name="description" rows="3" class="mt-1 block w-full rounded-md dark:bg-gray-700 border-gray-300 dark:border-gray-600 shadow-sm"></textarea>
             </div>
             <div>
@@ -56,7 +56,7 @@
                     <div class="border dark:border-gray-600 p-3 rounded-md bg-gray-50 dark:bg-gray-700/50">
                         <p><strong>Passo {{ step.step_number }}:</strong> {{ step.clue_text }}</p>
                         <p class="text-xs text-gray-500 dark:text-gray-400"><strong>Alvo:</strong> {{ step.target_type }} contendo "{{ step.target_identifier }}"</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400"><strong>Próxima Pista:</strong> "{{ step.hidden_clue }}"</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400"><strong>PrÃ³xima Pista:</strong> "{{ step.hidden_clue }}"</p>
                         <form method="POST" action="{{ url_for('delete_hunt_step', step_id=step.id) }}" onsubmit="return confirm('Tem a certeza que quer apagar este passo?');">
                             {{ form.csrf_token }}
                             <button type="submit" class="text-red-500 hover:text-red-700 text-xs font-semibold">APAGAR</button>
@@ -74,7 +74,7 @@
                         <input type="hidden" name="action" value="create_step">
                         <input type="hidden" name="hunt_id" value="{{ hunt.id }}">
                         <div>
-                            <label class="block text-sm">Nº do Passo</label>
+                            <label class="block text-sm">NÂº do Passo</label>
                             <input type="number" name="step_number" required class="mt-1 w-full text-sm rounded-md dark:bg-gray-700 border-gray-600">
                         </div>
                         <div>
@@ -85,7 +85,7 @@
                             <label class="block text-sm">Tipo de Alvo</label>
                             <select name="target_type" class="mt-1 w-full text-sm rounded-md dark:bg-gray-700 border-gray-600">
                                 <option value="FAQ">Pergunta da FAQ</option>
-                                <option value="CHALLENGE">Título do Desafio</option>
+                                <option value="CHALLENGE">TÃ­tulo do Desafio</option>
                             </select>
                         </div>
                         <div>

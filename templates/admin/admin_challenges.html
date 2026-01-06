@@ -1,4 +1,4 @@
-{% extends 'admin/admin_base.html' %}
+﻿{% extends 'admin/admin_base.html' %}
 
 {% block title %}Gerenciar Desafios{% endblock %}
 
@@ -18,9 +18,9 @@
     {% endwith %}
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Coluna do Formulário e Importação -->
+        <!-- Coluna do FormulÃ¡rio e ImportaÃ§Ã£o -->
         <div class="lg:col-span-1 space-y-8">
-            <!-- Card de Criação -->
+            <!-- Card de CriaÃ§Ã£o -->
             <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border dark:border-gray-700">
                 <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Criar Novo Desafio</h2>
                 <form method="POST" action="{{ url_for('admin_challenges') }}" id="createChallengeForm">
@@ -28,17 +28,17 @@
                     <input type="hidden" name="action" value="create_challenge">
 
                     <div class="mb-4">
-                        <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Título</label>
+                        <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">TÃ­tulo</label>
                         <input type="text" id="title" name="title" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
                     </div>
 
                     <div class="mb-4">
-                        <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Descrição</label>
+                        <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">DescriÃ§Ã£o</label>
                         <textarea id="description" name="description" rows="4" required class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"></textarea>
                     </div>
 
                     <div class="mb-4">
-                        <label for="level_required" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Nível Requerido</label>
+                        <label for="level_required" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">NÃ­vel Requerido</label>
                         <select id="level_required" name="level_required" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                             {% for level in levels %}
                             <option value="{{ level.name }}">{{ level.name }}</option>
@@ -55,7 +55,7 @@
                         <label for="challenge_type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Tipo de Desafio</label>
                         <select id="challenge_type" name="challenge_type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                             <option value="text">Texto</option>
-                            <option value="code">Código</option>
+                            <option value="code">CÃ³digo</option>
                         </select>
                     </div>
                     
@@ -65,14 +65,14 @@
                         <input type="text" id="expected_answer_text" name="expected_answer" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
                     </div>
 
-                    <!-- Campos de Resposta para Código -->
+                    <!-- Campos de Resposta para CÃ³digo -->
                     <div id="answer-code-group" class="hidden mb-4 space-y-4">
                          <div>
-                            <label for="expected_answer_code" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Resposta Esperada (Código)</label>
+                            <label for="expected_answer_code" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Resposta Esperada (CÃ³digo)</label>
                             <textarea id="expected_answer_code" rows="4" class="font-mono bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"></textarea>
                         </div>
                         <div>
-                            <label for="expected_output" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Saída Esperada do Código (Texto de ajuda)</label>
+                            <label for="expected_output" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">SaÃ­da Esperada do CÃ³digo (Texto de ajuda)</label>
                             <textarea id="expected_output" name="expected_output" rows="2" class="font-mono bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"></textarea>
                         </div>
                     </div>
@@ -86,7 +86,7 @@
                 </form>
             </div>
             
-            <!-- Card de Importação -->
+            <!-- Card de ImportaÃ§Ã£o -->
             <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border dark:border-gray-700">
                 <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Importar Desafios via JSON</h2>
                 <form method="POST" action="{{ url_for('admin_challenges') }}" enctype="multipart/form-data">
@@ -110,11 +110,11 @@
                     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th scope="col" class="py-3 px-6">Título</th>
+                                <th scope="col" class="py-3 px-6">TÃ­tulo</th>
                                 <th scope="col" class="py-3 px-6">Tipo</th>
-                                <th scope="col" class="py-3 px-6">Nível</th>
+                                <th scope="col" class="py-3 px-6">NÃ­vel</th>
                                 <th scope="col" class="py-3 px-6">Pontos</th>
-                                <th scope="col" class="py-3 px-6">Ações</th>
+                                <th scope="col" class="py-3 px-6">AÃ§Ãµes</th>
                             </tr>
                         </thead>
                         <tbody>

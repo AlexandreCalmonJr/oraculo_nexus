@@ -1,18 +1,18 @@
-{% extends 'admin/admin_base.html' %}
+﻿{% extends 'admin/admin_base.html' %}
 
-{% block title %}Admin - Histórico de Desafios Diários{% endblock %}
-{% block page_title %}Histórico de Desafios Diários{% endblock %}
+{% block title %}Admin - HistÃ³rico de Desafios DiÃ¡rios{% endblock %}
+{% block page_title %}HistÃ³rico de Desafios DiÃ¡rios{% endblock %}
 
 {% block content %}
     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
-        <p class="mb-4 text-gray-600 dark:text-gray-400">Esta página mostra o histórico de desafios que foram selecionados automaticamente pelo sistema a cada dia.</p>
+        <p class="mb-4 text-gray-600 dark:text-gray-400">Esta pÃ¡gina mostra o histÃ³rico de desafios que foram selecionados automaticamente pelo sistema a cada dia.</p>
         <div class="overflow-x-auto">
             <table class="w-full border-collapse text-left">
                 <thead>
                     <tr class="bg-gray-100 dark:bg-gray-700">
                         <th class="border-b dark:border-gray-600 p-3">Data</th>
                         <th class="border-b dark:border-gray-600 p-3">Desafio Selecionado</th>
-                        <th class="border-b dark:border-gray-600 p-3">Bónus de Pontos</th>
+                        <th class="border-b dark:border-gray-600 p-3">BÃ³nus de Pontos</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
@@ -24,7 +24,7 @@
                         </tr>
                     {% else %}
                         <tr>
-                            <td class="p-3 text-center" colspan="3">Nenhum desafio diário foi gerado ainda.</td>
+                            <td class="p-3 text-center" colspan="3">Nenhum desafio diÃ¡rio foi gerado ainda.</td>
                         </tr>
                     {% endfor %}
                 </tbody>

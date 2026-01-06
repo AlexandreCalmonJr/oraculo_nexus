@@ -1,4 +1,4 @@
-{% extends 'admin/admin_base.html' %}
+﻿{% extends 'admin/admin_base.html' %}
 
 {% block title %}Admin: Gerenciar FAQs{% endblock %}
 
@@ -18,9 +18,9 @@
     {% endwith %}
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Coluna da Esquerda: Formulários -->
+        <!-- Coluna da Esquerda: FormulÃ¡rios -->
         <div class="lg:col-span-1 space-y-6">
-            <!-- Formulário de Criação -->
+            <!-- FormulÃ¡rio de CriaÃ§Ã£o -->
             <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
                 <h2 class="text-2xl font-semibold mb-4">Criar Nova FAQ</h2>
                 <form action="{{ url_for('admin_faq') }}" method="POST" enctype="multipart/form-data">
@@ -48,7 +48,7 @@
                             <input type="url" id="image_url" name="image_url" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                         </div>
                         <div>
-                            <label for="video_url" class="block text-sm font-medium text-gray-700 dark:text-gray-300">URL do Vídeo (Opcional)</label>
+                            <label for="video_url" class="block text-sm font-medium text-gray-700 dark:text-gray-300">URL do VÃ­deo (Opcional)</label>
                             <input type="url" id="video_url" name="video_url" class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                         </div>
                         <div>
@@ -62,7 +62,7 @@
                 </form>
             </div>
 
-            <!-- Formulário de Importação -->
+            <!-- FormulÃ¡rio de ImportaÃ§Ã£o -->
             <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
                 <h2 class="text-2xl font-semibold mb-4">Importar FAQs</h2>
                 <form action="{{ url_for('admin_faq') }}" method="POST" enctype="multipart/form-data">
@@ -110,7 +110,7 @@
                                         Categoria
                                     </th>
                                     <th scope="col" class="relative px-6 py-3">
-                                        <span class="sr-only">Ações</span>
+                                        <span class="sr-only">AÃ§Ãµes</span>
                                     </th>
                                 </tr>
                             </thead>

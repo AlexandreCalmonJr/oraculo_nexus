@@ -61,8 +61,14 @@
     /* Forçar altura total do container */
     .chat-container-modern {
         height: 100% !important;
-        max-height: 100% !important;
-        min-height: 600px;
+        max-height: none !important;
+        min-height: 500px;
+    }
+
+    /* Garantir que o chat body use o espaço disponível */
+    .chat-body-modern {
+        flex: 1 1 auto;
+        min-height: 0;
     }
 </style>
 
