@@ -32,6 +32,7 @@
     width: 70px;
 }
 
+
 /* Botão de Toggle */
 .sidebar-toggle {
     position: absolute;
@@ -49,7 +50,7 @@
     justify-content: center;
     font-size: 1.2rem;
     transition: all 0.3s ease;
-    z-index: 10;
+    z-index: 5;
 }
 
 .sidebar-toggle:hover {
@@ -70,6 +71,8 @@
 /* Navegação */
 .sidebar-nav {
     margin-top: 4.5rem;
+    position: relative;
+    z-index: 1;
     padding: 0.5rem 0;
     flex: 1;
     overflow-y: auto;
@@ -220,6 +223,7 @@
     font-weight: 600;
     margin: 0;
 }
+
 
 /* ===== TOPBAR (HEADER) ===== */
 .topbar {

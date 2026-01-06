@@ -24,6 +24,7 @@
         <aside class="sidebar" id="sidebar">
                 <button class="sidebar-toggle" id="sidebar-toggle" title="Alternar menu" type="button">
                         <i class="fas fa-bars"></i>
+                        
                 </button>
                 <nav class="sidebar-nav">
                         <a href="{{ url_for('admin_dashboard') }}" class="sidebar-item"><i
@@ -60,6 +61,8 @@
                                         class="fas fa-clipboard-list"></i><span>Logs de Atividade</span></a>
                         <a href="{{ url_for('security.security_dashboard') }}" class="sidebar-item"><i
                                         class="fas fa-shield-alt"></i><span>Seguranca</span></a>
+                        <a href="{{ url_for('backup.backup_page') }}" class="sidebar-item"><i
+                                        class="fas fa-database"></i><span>Backup de Dados</span></a>
                         <div class="sidebar-divider"></div>
                         <a href="{{ url_for('admin_system') }}" class="sidebar-item"><i
                                         class="fas fa-server"></i><span>Monitoramento</span></a>
@@ -72,7 +75,7 @@
                 </nav>
                 <div class="sidebar-footer">
                         <div class="sidebar-user">
-                                <div class="sidebar-user-avatar">Admin</div>
+                                <div class="sidebar-user-avatar">A</div>
                                 <div class="sidebar-user-info">
                                         <p class="sidebar-user-name">Admin</p>
                                         <p class="sidebar-user-level">Administrador</p>

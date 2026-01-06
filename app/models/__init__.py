@@ -18,6 +18,7 @@ from app.models.events import (
 from app.models.chat import ChatMessage, Ticket
 from app.models.notifications import Notification
 from app.models.admin_log import AdminLog
+from app.models.database_backup import DatabaseBackup
 
 __all__ = [
     'User', 'InvitationCode',
