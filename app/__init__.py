@@ -164,6 +164,36 @@ def initialize_database():
     """Inicializa o banco de dados com dados padrão"""
     db.create_all()
     
+    # --- AUTO-MIGRATION: Adicionar colunas faltantes ---
+    try:
+        from sqlalchemy import text
+        inspector = db.inspect(db.engine)
+        
+        # Verificar e corrigir tabela user_path_progress
+        if inspector.has_table('user_path_progress'):
+            columns = [c['name'] for c in inspector.get_columns('user_path_progress')]
+            if 'started_at' not in columns:
+                print("Auto-migration: Adding 'started_at' to 'user_path_progress'...")
+                try:
+                    # Tentar sintaxe PostgreSQL
+                    with db.engine.connect() as conn:
+                        conn.execute(text("ALTER TABLE user_path_progress ADD COLUMN started_at TIMESTAMP DEFAULT NOW() NOT NULL"))
+                        conn.commit()
+                    print("Auto-migration: Column added (PostgreSQL).")
+                except Exception as e:
+                    print(f"Auto-migration (PG) failed: {e}")
+                    try:
+                        # Tentar sintaxe SQLite
+                        with db.engine.connect() as conn:
+                            conn.execute(text("ALTER TABLE user_path_progress ADD COLUMN started_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL"))
+                            conn.commit()
+                        print("Auto-migration: Column added (SQLite).")
+                    except Exception as e2:
+                        print(f"Auto-migration (SQLite) failed: {e2}")
+    except Exception as e:
+        print(f"Auto-migration error: {e}")
+    # ---------------------------------------------------
+    
     for level_name, level_data in LEVELS.items():
         if not Level.query.filter_by(name=level_name).first():
             level = Level(name=level_name, min_points=level_data['min_points'], insignia=level_data['insignia'])
