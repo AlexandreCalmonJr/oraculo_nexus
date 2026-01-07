@@ -8,6 +8,7 @@
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="{{ url_for('static', filename='styles.css') }}?v=3.0" rel="stylesheet">
         <link href="{{ url_for('static', filename='sidebar.css') }}?v=2.0" rel="stylesheet">
+    <link href="{{ url_for('static', filename='mobile-menu.css') }}?v=1.0" rel="stylesheet">
         <link href="{{ url_for('static', filename='notifications.css') }}?v=1.0" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -121,8 +122,7 @@
                                 <span>Sair</span>
                         </a>
                 </nav>
-
-                <!-- Footer -->
+        <!-- Footer -->
                 <div class="sidebar-footer">
                         <div class="sidebar-user">
                                 <div class="sidebar-user-avatar">A</div>
@@ -166,6 +166,85 @@
 
                 {% block content %}{% endblock %}
         </main>
+
+
+    <!-- Mobile Bottom Navigation (Admin) -->
+    <nav class="mobile-bottom-nav">
+        <div class="mobile-nav-items">
+            <a href="{{ url_for('admin_dashboard') }}" class="mobile-nav-item" title="Dashboard">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{{ url_for('admin_users') }}" class="mobile-nav-item" title="Usuários">
+                <i class="fas fa-users"></i>
+                <span>Usuários</span>
+            </a>
+            <a href="{{ url_for('admin_challenges') }}" class="mobile-nav-item" title="Desafios">
+                <i class="fas fa-gamepad"></i>
+                <span>Desafios</span>
+            </a>
+            <a href="{{ url_for('admin_system') }}" class="mobile-nav-item" title="Sistema">
+                <i class="fas fa-server"></i>
+                <span>Sistema</span>
+            </a>
+            <button class="mobile-nav-item" id="mobile-menu-button" title="Menu">
+                <i class="fas fa-bars"></i>
+                <span>Menu</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Modal (Admin) -->
+    <div class="mobile-menu-modal" id="mobile-menu-modal">
+        <div class="mobile-menu-content">
+            <div class="mobile-menu-header">
+                <h2 class="mobile-menu-title">Menu Admin</h2>
+                <button class="mobile-menu-close" id="mobile-menu-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- User Info -->
+            <div class="mobile-menu-user">
+                <div class="mobile-menu-user-avatar">A</div>
+                <div class="mobile-menu-user-info">
+                    <p class="mobile-menu-user-name">Administrador</p>
+                    <p class="mobile-menu-user-level">Painel Admin</p>
+                </div>
+            </div>
+
+            <!-- Menu Items -->
+            <div class="mobile-menu-list">
+                <a href="{{ url_for('admin_dashboard') }}" class="mobile-menu-item"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+                <a href="{{ url_for('admin_users') }}" class="mobile-menu-item"><i class="fas fa-users"></i><span>Usuários</span></a>
+                <a href="{{ url_for('admin_challenges') }}" class="mobile-menu-item"><i class="fas fa-gamepad"></i><span>Desafios</span></a>
+                <a href="{{ url_for('admin_daily_challenges') }}" class="mobile-menu-item"><i class="fas fa-calendar-day"></i><span>Desafios Diários</span></a>
+                <a href="{{ url_for('admin_paths') }}" class="mobile-menu-item"><i class="fas fa-route"></i><span>Trilhas</span></a>
+                <a href="{{ url_for('admin_boss_fights') }}" class="mobile-menu-item"><i class="fas fa-skull-crossbones"></i><span>Boss Fights</span></a>
+                <a href="{{ url_for('admin_teams') }}" class="mobile-menu-item"><i class="fas fa-user-friends"></i><span>Times</span></a>
+                <a href="{{ url_for('admin_levels') }}" class="mobile-menu-item"><i class="fas fa-layer-group"></i><span>Níveis</span></a>
+                <a href="{{ url_for('admin_achievements') }}" class="mobile-menu-item"><i class="fas fa-trophy"></i><span>Conquistas</span></a>
+                <a href="{{ url_for('admin_events') }}" class="mobile-menu-item"><i class="fas fa-calendar-alt"></i><span>Eventos</span></a>
+                <a href="{{ url_for('admin_hunts') }}" class="mobile-menu-item"><i class="fas fa-map-marked-alt"></i><span>Caças</span></a>
+                <a href="{{ url_for('admin_battles') }}" class="mobile-menu-item"><i class="fas fa-fist-raised"></i><span>Batalhas</span></a>
+                <a href="{{ url_for('admin_faq') }}" class="mobile-menu-item"><i class="fas fa-question-circle"></i><span>FAQ</span></a>
+                <a href="{{ url_for('admin_import_content') }}" class="mobile-menu-item"><i class="fas fa-file-import"></i><span>Importar</span></a>
+                
+                <div class="mobile-menu-divider"></div>
+                
+                <a href="{{ url_for('notifications.admin_notifications') }}" class="mobile-menu-item"><i class="fas fa-bell"></i><span>Notificações</span></a>
+                <a href="{{ url_for('admin_logs.logs_page') }}" class="mobile-menu-item"><i class="fas fa-clipboard-list"></i><span>Logs</span></a>
+                <a href="{{ url_for('security.security_dashboard') }}" class="mobile-menu-item"><i class="fas fa-shield-alt"></i><span>Segurança</span></a>
+                <a href="{{ url_for('backup.backup_page') }}" class="mobile-menu-item"><i class="fas fa-database"></i><span>Backup</span></a>
+                <a href="{{ url_for('admin_system') }}" class="mobile-menu-item"><i class="fas fa-server"></i><span>Monitoramento</span></a>
+                
+                <div class="mobile-menu-divider"></div>
+                
+                <a href="{{ url_for('user.index') }}" class="mobile-menu-item"><i class="fas fa-arrow-left"></i><span>Voltar ao Site</span></a>
+                <a href="{{ url_for('auth.logout') }}" class="mobile-menu-item logout"><i class="fas fa-sign-out-alt"></i><span>Sair</span></a>
+            </div>
+        </div>
+    </div>
 
         <!-- Footer -->
         <footer class="main-footer">
@@ -212,6 +291,7 @@
 
         <!-- Sidebar Script -->
         <script src="{{ url_for('static', filename='sidebar.js') }}?v=2.0"></script>
+        <script src="{{ url_for('static', filename='mobile-menu.js') }}?v=1.0"></script>
 </body>
 
 </html>

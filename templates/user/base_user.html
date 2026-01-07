@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="{{ url_for('static', filename='styles.css') }}?v=3.0" rel="stylesheet">
     <link href="{{ url_for('static', filename='sidebar.css') }}?v=2.0" rel="stylesheet">
+    <link href="{{ url_for('static', filename='mobile-menu.css') }}?v=1.0" rel="stylesheet">
     <link href="{{ url_for('static', filename='notifications.css') }}?v=1.0" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -141,6 +142,111 @@
         {% block content %}{% endblock %}
     </main>
 
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav">
+        <div class="mobile-nav-items">
+            <a href="{{ url_for('user.index') }}" class="mobile-nav-item" title="Dashboard">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="{{ url_for('list_challenges') }}" class="mobile-nav-item" title="Desafios">
+                <i class="fas fa-gamepad"></i>
+                <span>Desafios</span>
+            </a>
+            <a href="{{ url_for('teams_list') }}" class="mobile-nav-item" title="Times">
+                <i class="fas fa-users"></i>
+                <span>Times</span>
+            </a>
+            <a href="{{ url_for('user.ranking') }}" class="mobile-nav-item" title="Ranking">
+                <i class="fas fa-trophy"></i>
+                <span>Ranking</span>
+            </a>
+            <button class="mobile-nav-item" id="mobile-menu-button" title="Menu">
+                <i class="fas fa-bars"></i>
+                <span>Menu</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Modal -->
+    <div class="mobile-menu-modal" id="mobile-menu-modal">
+        <div class="mobile-menu-content">
+            <div class="mobile-menu-header">
+                <h2 class="mobile-menu-title">Menu</h2>
+                <button class="mobile-menu-close" id="mobile-menu-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- User Info -->
+            <div class="mobile-menu-user">
+                <div class="mobile-menu-user-avatar">
+                    {{ current_user.name[0]|upper }}
+                </div>
+                <div class="mobile-menu-user-info">
+                    <p class="mobile-menu-user-name">{{ current_user.name }}</p>
+                    <p class="mobile-menu-user-level">{{ current_user.level.name if current_user.level else 'Iniciante' }}</p>
+                    <p class="mobile-menu-user-points">{{ current_user.points }} pontos</p>
+                </div>
+            </div>
+
+            <!-- Menu Items -->
+            <div class="mobile-menu-list">
+                <a href="{{ url_for('user.index') }}" class="mobile-menu-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{{ url_for('list_challenges') }}" class="mobile-menu-item">
+                    <i class="fas fa-gamepad"></i>
+                    <span>Desafios</span>
+                </a>
+                <a href="{{ url_for('teams_list') }}" class="mobile-menu-item">
+                    <i class="fas fa-users"></i>
+                    <span>Times</span>
+                </a>
+                <a href="{{ url_for('user.ranking') }}" class="mobile-menu-item">
+                    <i class="fas fa-trophy"></i>
+                    <span>Ranking</span>
+                </a>
+                <a href="{{ url_for('list_paths') }}" class="mobile-menu-item">
+                    <i class="fas fa-route"></i>
+                    <span>Trilhas</span>
+                </a>
+                <a href="{{ url_for('list_boss_fights') }}" class="mobile-menu-item">
+                    <i class="fas fa-skull-crossbones"></i>
+                    <span>Boss Fights</span>
+                </a>
+
+                <div class="mobile-menu-divider"></div>
+
+                <a href="{{ url_for('user.profile') }}" class="mobile-menu-item">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Meu Perfil</span>
+                </a>
+                <a href="{{ url_for('notifications.notifications_page') }}" class="mobile-menu-item">
+                    <i class="fas fa-bell"></i>
+                    <span>Notificações</span>
+                </a>
+
+                {% if current_user.is_admin %}
+                <div class="mobile-menu-divider"></div>
+                <a href="{{ url_for('admin_dashboard') }}" class="mobile-menu-item admin">
+                    <i class="fas fa-cogs"></i>
+                    <span>Painel Admin</span>
+                </a>
+                {% endif %}
+
+                <div class="mobile-menu-divider"></div>
+
+                <a href="{{ url_for('auth.logout') }}" class="mobile-menu-item logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="main-footer">
         <p>Desenvolvido pela equipe <span class="text-cyan-400 font-semibold">D3VB4</span> | © 2026 Oráculo Nexus</p>
@@ -192,6 +298,8 @@
     {% if request.endpoint and 'chat' in request.endpoint %}
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     {% endif %}
+    <!-- Mobile Menu Script -->
+    <script src="{{ url_for('static', filename='mobile-menu.js') }}?v=1.0"></script>
 </body>
 
 </html>
