@@ -7,7 +7,7 @@
     <title>{% block title %}ORÁCULO NEXUS{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="{{ url_for('static', filename='styles.css') }}?v=3.0" rel="stylesheet">
-    <link href="{{ url_for('static', filename='sidebar.css') }}?v=1.0" rel="stylesheet">
+    <link href="{{ url_for('static', filename='sidebar.css') }}?v=2.0" rel="stylesheet">
     <link href="{{ url_for('static', filename='notifications.css') }}?v=1.0" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -24,7 +24,7 @@
 
     <!-- Sidebar Vertical -->
     <aside class="sidebar" id="sidebar">
-        <!-- Botão de Toggle -->
+        <!-- Botão de Toggle (dentro do sidebar) -->
         <button class="sidebar-toggle" id="sidebar-toggle" title="Alternar menu" type="button">
             <i class="fas fa-bars"></i>
         </button>
@@ -111,7 +111,8 @@
 
             <!-- Notification Bell -->
             <div class="notification-bell-container">
-                <a href="{{ url_for('notifications.notifications_page') }}" class="topbar-btn notification-bell" id="notificationBell" title="Notificacoes">
+                <a href="{{ url_for('notifications.notifications_page') }}" class="topbar-btn notification-bell"
+                    id="notificationBell" title="Notificações">
                     <i class="fas fa-bell"></i>
                     <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
                 </a>
@@ -145,68 +146,10 @@
         <p>Desenvolvido pela equipe <span class="text-cyan-400 font-semibold">D3VB4</span> | © 2026 Oráculo Nexus</p>
     </footer>
 
+    <!-- Scripts -->
     <script>
-        // IMPORTANTE: Este script roda ANTES do script.js para evitar conflitos
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('Inicializando controles da sidebar e tema...');
-
-            // Sidebar Toggle
-            const sidebar = document.getElementById('sidebar');
-            const sidebarToggle = document.getElementById('sidebar-toggle');
-            const sidebarOverlay = document.getElementById('sidebar-overlay');
-            const savedSidebarState = localStorage.getItem('sidebarCollapsed');
-
-            // Restaurar estado salvo
-            if (savedSidebarState === 'true') {
-                sidebar.classList.add('collapsed');
-            }
-
-            // Toggle sidebar
-            const toggleSidebar = (event) => {
-                if (event) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-
-                console.log('Toggle sidebar clicado');
-                sidebar.classList.toggle('collapsed');
-                const isCollapsed = sidebar.classList.contains('collapsed');
-                localStorage.setItem('sidebarCollapsed', isCollapsed);
-            };
-
-            if (sidebarToggle) {
-                // Remove listeners antigos se existirem
-                sidebarToggle.replaceWith(sidebarToggle.cloneNode(true));
-                const newToggle = document.getElementById('sidebar-toggle');
-
-                newToggle.addEventListener('click', toggleSidebar);
-                console.log('Event listener da sidebar configurado');
-            }
-
-            // Mobile: abrir/fechar sidebar com overlay
-            if (sidebarOverlay) {
-                sidebarOverlay.addEventListener('click', () => {
-                    sidebar.classList.remove('mobile-open');
-                    sidebarOverlay.classList.remove('active');
-                });
-            }
-
-            // Detectar mobile e adicionar comportamento
-            const isMobile = window.innerWidth < 768;
-            if (isMobile) {
-                sidebar.classList.add('collapsed');
-
-                if (sidebarToggle) {
-                    const mobileToggle = document.getElementById('sidebar-toggle');
-                    mobileToggle.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        sidebar.classList.toggle('mobile-open');
-                        sidebarOverlay.classList.toggle('active');
-                    });
-                }
-            }
-
-            // Lógica do Tema
+        // Tema - carrega primeiro para evitar flash
+        (function () {
             const themeToggle = document.getElementById('theme-toggle');
             if (themeToggle) {
                 const themeIcon = themeToggle.querySelector('i');
@@ -239,12 +182,16 @@
                     updateTheme(document.documentElement.classList.contains('light'));
                 });
             }
-
-            console.log('Sidebar e tema inicializados com sucesso');
-        });
+        })();
     </script>
+
+    <!-- Sidebar Script - NOVO ARQUIVO UNIFICADO -->
+    <script src="{{ url_for('static', filename='sidebar.js') }}?v=2.0"></script>
+
+    <!-- Chat Script (se existir na página) -->
+    {% if request.endpoint and 'chat' in request.endpoint %}
     <script src="{{ url_for('static', filename='script.js') }}"></script>
-    <script src="{{ url_for('static', filename='sidebar_mobile.js') }}"></script>
+    {% endif %}
 </body>
 
 </html>

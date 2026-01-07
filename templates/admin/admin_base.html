@@ -7,7 +7,7 @@
         <title>{% block title %}Painel de Administração{% endblock %} - ORÁCULO NEXUS</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="{{ url_for('static', filename='styles.css') }}?v=3.0" rel="stylesheet">
-        <link href="{{ url_for('static', filename='sidebar.css') }}?v=1.0" rel="stylesheet">
+        <link href="{{ url_for('static', filename='sidebar.css') }}?v=2.0" rel="stylesheet">
         <link href="{{ url_for('static', filename='notifications.css') }}?v=1.0" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -20,59 +20,109 @@
 </head>
 
 <body class="sidebar-layout" data-user-id="{{ current_user.id }}" data-is-admin="true">
+
         <!-- Sidebar Admin -->
         <aside class="sidebar" id="sidebar">
+                <!-- Botão de Toggle -->
                 <button class="sidebar-toggle" id="sidebar-toggle" title="Alternar menu" type="button">
                         <i class="fas fa-bars"></i>
-                        
                 </button>
+
+                <!-- Navegação -->
                 <nav class="sidebar-nav">
-                        <a href="{{ url_for('admin_dashboard') }}" class="sidebar-item"><i
-                                        class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
-                        <a href="{{ url_for('admin_users') }}" class="sidebar-item"><i
-                                        class="fas fa-users"></i><span>Usuários</span></a>
-                        <a href="{{ url_for('admin_challenges') }}" class="sidebar-item"><i
-                                        class="fas fa-gamepad"></i><span>Desafios</span></a>
-                        <a href="{{ url_for('admin_daily_challenges') }}" class="sidebar-item"><i
-                                        class="fas fa-calendar-day"></i><span>Desafios Diários</span></a>
-                        <a href="{{ url_for('admin_paths') }}" class="sidebar-item"><i
-                                        class="fas fa-route"></i><span>Trilhas</span></a>
-                        <a href="{{ url_for('admin_boss_fights') }}" class="sidebar-item"><i
-                                        class="fas fa-skull-crossbones"></i><span>Boss Fights</span></a>
-                        <a href="{{ url_for('admin_teams') }}" class="sidebar-item"><i
-                                        class="fas fa-user-friends"></i><span>Times</span></a>
-                        <a href="{{ url_for('admin_levels') }}" class="sidebar-item"><i
-                                        class="fas fa-layer-group"></i><span>Níveis</span></a>
-                        <a href="{{ url_for('admin_achievements') }}" class="sidebar-item"><i
-                                        class="fas fa-trophy"></i><span>Conquistas</span></a>
-                        <a href="{{ url_for('admin_events') }}" class="sidebar-item"><i
-                                        class="fas fa-calendar-alt"></i><span>Eventos</span></a>
-                        <a href="{{ url_for('admin_hunts') }}" class="sidebar-item"><i
-                                        class="fas fa-map-marked-alt"></i><span>Caças</span></a>
-                        <a href="{{ url_for('admin_battles') }}" class="sidebar-item"><i
-                                        class="fas fa-fist-raised"></i><span>Batalhas</span></a>
-                        <a href="{{ url_for('admin_faq') }}" class="sidebar-item"><i
-                                        class="fas fa-question-circle"></i><span>FAQ</span></a>
-                        <a href="{{ url_for('admin_import_content') }}" class="sidebar-item"><i
-                                        class="fas fa-file-import"></i><span>Importar</span></a>
-                        <a href="{{ url_for('notifications.admin_notifications') }}" class="sidebar-item"><i
-                                        class="fas fa-bell"></i><span>Notificações</span></a>
-                        <a href="{{ url_for('admin_logs.logs_page') }}" class="sidebar-item"><i
-                                        class="fas fa-clipboard-list"></i><span>Logs de Atividade</span></a>
-                        <a href="{{ url_for('security.security_dashboard') }}" class="sidebar-item"><i
-                                        class="fas fa-shield-alt"></i><span>Seguranca</span></a>
-                        <a href="{{ url_for('backup.backup_page') }}" class="sidebar-item"><i
-                                        class="fas fa-database"></i><span>Backup de Dados</span></a>
+                        <a href="{{ url_for('admin_dashboard') }}" class="sidebar-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>Dashboard</span>
+                        </a>
+                        <a href="{{ url_for('admin_users') }}" class="sidebar-item">
+                                <i class="fas fa-users"></i>
+                                <span>Usuários</span>
+                        </a>
+                        <a href="{{ url_for('admin_challenges') }}" class="sidebar-item">
+                                <i class="fas fa-gamepad"></i>
+                                <span>Desafios</span>
+                        </a>
+                        <a href="{{ url_for('admin_daily_challenges') }}" class="sidebar-item">
+                                <i class="fas fa-calendar-day"></i>
+                                <span>Desafios Diários</span>
+                        </a>
+                        <a href="{{ url_for('admin_paths') }}" class="sidebar-item">
+                                <i class="fas fa-route"></i>
+                                <span>Trilhas</span>
+                        </a>
+                        <a href="{{ url_for('admin_boss_fights') }}" class="sidebar-item">
+                                <i class="fas fa-skull-crossbones"></i>
+                                <span>Boss Fights</span>
+                        </a>
+                        <a href="{{ url_for('admin_teams') }}" class="sidebar-item">
+                                <i class="fas fa-user-friends"></i>
+                                <span>Times</span>
+                        </a>
+                        <a href="{{ url_for('admin_levels') }}" class="sidebar-item">
+                                <i class="fas fa-layer-group"></i>
+                                <span>Níveis</span>
+                        </a>
+                        <a href="{{ url_for('admin_achievements') }}" class="sidebar-item">
+                                <i class="fas fa-trophy"></i>
+                                <span>Conquistas</span>
+                        </a>
+                        <a href="{{ url_for('admin_events') }}" class="sidebar-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Eventos</span>
+                        </a>
+                        <a href="{{ url_for('admin_hunts') }}" class="sidebar-item">
+                                <i class="fas fa-map-marked-alt"></i>
+                                <span>Caças</span>
+                        </a>
+                        <a href="{{ url_for('admin_battles') }}" class="sidebar-item">
+                                <i class="fas fa-fist-raised"></i>
+                                <span>Batalhas</span>
+                        </a>
+                        <a href="{{ url_for('admin_faq') }}" class="sidebar-item">
+                                <i class="fas fa-question-circle"></i>
+                                <span>FAQ</span>
+                        </a>
+                        <a href="{{ url_for('admin_import_content') }}" class="sidebar-item">
+                                <i class="fas fa-file-import"></i>
+                                <span>Importar</span>
+                        </a>
+                        <a href="{{ url_for('notifications.admin_notifications') }}" class="sidebar-item">
+                                <i class="fas fa-bell"></i>
+                                <span>Notificações</span>
+                        </a>
+                        <a href="{{ url_for('admin_logs.logs_page') }}" class="sidebar-item">
+                                <i class="fas fa-clipboard-list"></i>
+                                <span>Logs de Atividade</span>
+                        </a>
+                        <a href="{{ url_for('security.security_dashboard') }}" class="sidebar-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Segurança</span>
+                        </a>
+                        <a href="{{ url_for('backup.backup_page') }}" class="sidebar-item">
+                                <i class="fas fa-database"></i>
+                                <span>Backup de Dados</span>
+                        </a>
+
                         <div class="sidebar-divider"></div>
-                        <a href="{{ url_for('admin_system') }}" class="sidebar-item"><i
-                                        class="fas fa-server"></i><span>Monitoramento</span></a>
+
+                        <a href="{{ url_for('admin_system') }}" class="sidebar-item">
+                                <i class="fas fa-server"></i>
+                                <span>Monitoramento</span>
+                        </a>
+
                         <div class="sidebar-divider"></div>
-                        <a href="{{ url_for('user.index') }}" class="sidebar-item"><i
-                                        class="fas fa-arrow-left"></i><span>Voltar ao
-                                        Site</span></a>
-                        <a href="{{ url_for('auth.logout') }}" class="sidebar-item sidebar-logout"><i
-                                        class="fas fa-sign-out-alt"></i><span>Sair</span></a>
+
+                        <a href="{{ url_for('user.index') }}" class="sidebar-item">
+                                <i class="fas fa-arrow-left"></i>
+                                <span>Voltar ao Site</span>
+                        </a>
+                        <a href="{{ url_for('auth.logout') }}" class="sidebar-item sidebar-logout">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Sair</span>
+                        </a>
                 </nav>
+
+                <!-- Footer -->
                 <div class="sidebar-footer">
                         <div class="sidebar-user">
                                 <div class="sidebar-user-avatar">A</div>
@@ -83,18 +133,26 @@
                         </div>
                 </div>
         </aside>
+
+        <!-- Overlay -->
         <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+        <!-- Header -->
         <header class="topbar">
                 <div class="topbar-left">
                         <h1 class="text-xl font-bold">{% block page_title %}Dashboard{% endblock %}</h1>
                 </div>
                 <div class="topbar-right">
-                        <button id="theme-toggle" class="topbar-btn" title="Alternar tema" type="button"><i
-                                        class="fas fa-moon"></i></button>
-                        <a href="{{ url_for('user.index') }}" class="topbar-btn" title="Voltar ao site"><i
-                                        class="fas fa-home"></i></a>
+                        <button id="theme-toggle" class="topbar-btn" title="Alternar tema" type="button">
+                                <i class="fas fa-moon"></i>
+                        </button>
+                        <a href="{{ url_for('user.index') }}" class="topbar-btn" title="Voltar ao site">
+                                <i class="fas fa-home"></i>
+                        </a>
                 </div>
         </header>
+
+        <!-- Main Content -->
         <main class="main-content">
                 {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
@@ -105,13 +163,55 @@
                 </div>
                 {% endif %}
                 {% endwith %}
+
                 {% block content %}{% endblock %}
         </main>
+
+        <!-- Footer -->
         <footer class="main-footer">
                 <p>Painel Administrativo - <span class="text-cyan-400 font-semibold">ORÁCULO NEXUS</span> | © 2026</p>
         </footer>
-        <script src="{{ url_for('static', filename='sidebar-fix.js') }}?v=1.0"></script>
-    <script src="{{ url_for('static', filename='sidebar_mobile.js') }}"></script>
+
+        <!-- Scripts -->
+        <script>
+                // Tema
+                (function () {
+                        const themeToggle = document.getElementById('theme-toggle');
+                        if (themeToggle) {
+                                const themeIcon = themeToggle.querySelector('i');
+                                const userPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                                const savedTheme = localStorage.getItem('theme');
+
+                                const updateTheme = (isDark) => {
+                                        if (isDark) {
+                                                document.documentElement.classList.remove('light');
+                                                themeIcon.classList.remove('fa-moon');
+                                                themeIcon.classList.add('fa-sun');
+                                                localStorage.setItem('theme', 'dark');
+                                        } else {
+                                                document.documentElement.classList.add('light');
+                                                themeIcon.classList.remove('fa-sun');
+                                                themeIcon.classList.add('fa-moon');
+                                                localStorage.setItem('theme', 'light');
+                                        }
+                                };
+
+                                if (savedTheme) {
+                                        updateTheme(savedTheme === 'dark');
+                                } else {
+                                        updateTheme(userPrefersDark);
+                                }
+
+                                themeToggle.addEventListener('click', (e) => {
+                                        e.preventDefault();
+                                        updateTheme(document.documentElement.classList.contains('light'));
+                                });
+                        }
+                })();
+        </script>
+
+        <!-- Sidebar Script -->
+        <script src="{{ url_for('static', filename='sidebar.js') }}?v=2.0"></script>
 </body>
 
 </html>
